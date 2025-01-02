@@ -6,7 +6,12 @@ const sequelize = new Sequelize(
     '', // mật khẩu
     {
         host: 'localhost', // đường link hosting
-        dialect: 'mysql'
+        dialect: 'mysql',
+        timezone: '+07:00', // Đặt múi giờ của bạn (UTC+7)
+        dialectOptions: {
+            timezone: '+07:00', // Đồng bộ múi giờ với MySQL
+        },
+        logging: false // Tắt chế độ in câu SQL
     }
 );
 
@@ -16,5 +21,4 @@ sequelize.authenticate().then(() => {
 }).catch((error) => {
     console.error('Unable to connect to the database: ', error);
 });
-
-module.exports.sequelize = sequelize;
+module.exports = sequelize;

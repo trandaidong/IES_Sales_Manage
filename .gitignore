@@ -1,5 +1,0 @@
-# file naỳ sẽ loại bỏ đi những file nào mà mình không muốn đây lên github
-
-/node_modules
-
-.env
