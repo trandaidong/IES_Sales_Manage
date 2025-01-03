@@ -1,0 +1,109 @@
+@use "sass:map";
+@import "style/pages/theme";
+@import "style/pages/responsive";
+
+.product_detail_pic {
+  display: flex;
+  column-gap: 10px;
+  img {
+    flex: 0 0 auto;
+    object-fit: cover;
+    max-width: 65%;
+    height: auto;
+  }
+  .main {
+    flex: 0 0 35%;
+    display: grid;
+    align-items: stretch;
+    img {
+      width: 100%;
+      object-fit: cover;
+
+      &:not(:first-child) {
+        padding-top: 5px;
+      }
+    }
+  }
+}
+.product_detail_text {
+  h2 {
+    color: #252525;
+    font-weight: 700;
+  }
+  .seen-icon {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    line-height: 30px;
+    column-gap: 5px;
+  }
+  p {
+    margin: 10px 0;
+    line-height: 25px;
+  }
+  ul {
+    margin: 20px 0;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+    li {
+      list-style: none;
+      display: flex;
+      column-gap: 20px;
+      line-height: 35px;
+      b {
+        width: 150px;
+      }
+      span {
+        display: flex;
+        column-gap: 10px;
+        align-items: center;
+        svg {
+          font-size: 20px;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+.product_detail_tab {
+  margin: 20px 20px;
+  h4 {
+    text-align: center;
+    position: relative;
+    margin-bottom: 20px;
+
+    &::after {
+      position: absolute;
+      right: 0;
+      top: 12px;
+      height: 1px;
+      width: 43%;
+      background: #ebebeb;
+      content: "";
+    }
+    &::before {
+      position: absolute;
+      left: 0;
+      top: 12px;
+      height: 1px;
+      width: 43%;
+      background: #ebebeb;
+      content: "";
+    }
+    &::after,
+    &::before {
+      @include Responsive($MEDIUM_DEVICES) {
+        width: 42%;
+      }
+      @include Responsive($TABLET_DEVICES) {
+        width: 38%;
+      }
+      @include Responsive($WIDE_MOBILE) {
+        width: 34%;
+      }
+      @include Responsive($SMALL_DEVICES) {
+        width: 27%;
+      }
+    }
+  }
+}
