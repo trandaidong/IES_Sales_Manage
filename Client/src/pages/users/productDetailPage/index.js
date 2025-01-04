@@ -1,5 +1,5 @@
 // trang này dùng để hiển thị trang chủ của người dùng
-import { memo } from "react";
+import { memo,useState } from "react";
 import Breadcrumb from "../theme/breadcrumb";
 import "./style.scss";
 import cat1Img from "assets/users/images/categories/cat-1.jpg";
@@ -16,8 +16,80 @@ import { ProductCard } from "component";
 import { featProducts } from "utils/common";
 import Quantity from "component/Quantity";
 
+const Comment = ({ username, time, content }) => {
+  return (
+    <div className="comment">
+      {/* Avatar, tên và thời gian trên cùng một dòng */}
+      <div className="comment-header">
+        <div className="comment-avatar">
+          <img
+            src={`https://i.pravatar.cc/40?u=${username}`}
+            alt="avatar"
+            className="avatar-img"
+          />
+          <div className="comment-info">
+            <p className="username">{username}</p>
+            <p className="time">{time}</p>
+          </div>
+        </div>
+      </div>
+      {/* Nội dung bình luận */}
+      <p className="comment-content">{content}</p>
+    </div>
+  );
+};
+
+const CommentForm = ({ onAddComment }) => {
+  const [content, setContent] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (content.trim() === "") return;
+    onAddComment({
+      username: "Người dùng mới",
+      time: "Vừa xong",
+      content,
+    });
+    setContent("");
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="comment-form">
+      <textarea
+        className="comment-form__textarea"
+        rows="3"
+        placeholder="Thêm bình luận..."
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+      ></textarea>
+      <button type="submit" className="comment-form__button">
+        Đăng bình luận
+      </button>
+    </form>
+  );
+};
+
 const ProductDetailPage = () => {
   const imgs = [cat1Img, cat2Img, cat3Img];
+
+   // State cho phần bình luận
+   const [comments, setComments] = useState([
+    {
+      username: "Cukak",
+      time: "3 ngày trước",
+      content: "Sản phẩm rất tốt, mình đã mua và rất hài lòng!",
+    },
+    {
+      username: "ginnoutrais5561",
+      time: "1 tuần trước",
+      content: "Sản phẩm nhìn đẹp, sẽ cân nhắc đặt mua.",
+    },
+  ]);
+
+  const addComment = (newComment) => {
+    setComments([newComment, ...comments]);
+  };
+
   return (
     <>
       <Breadcrumb name="Chi tiết sản phẩm" />
@@ -122,6 +194,18 @@ const ProductDetailPage = () => {
               </li>
             </ul>
           </div>
+        </div>
+        <div className="product-comments mt-6">
+          <h4 className="text-xl font-bold mb-4">Bình luận</h4>
+          <CommentForm onAddComment={addComment} />
+          {comments.map((comment, index) => (
+            <Comment
+              key={index}
+              username={comment.username}
+              time={comment.time}
+              content={comment.content}
+            />
+          ))}
         </div>
         <div className="section-title">
           <h2>Sản phẩm tương tự</h2>
