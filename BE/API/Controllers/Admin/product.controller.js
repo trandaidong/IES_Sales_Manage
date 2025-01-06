@@ -70,10 +70,11 @@ module.exports.index = async (req, res) => {
         if (req.query.keyword) {
             keyword = req.query.keyword;
         }
-        console.log(filterStatus);
         res.render('admin/pages/products/index.pug', {
             pageTitle: "Sản phẩm",
             keyword: keyword,
+            sortKey: sortKey,
+            sortValue: sortValue,
             filterStatus: filterStatus,
             pagination: objectPagination,
             products: products

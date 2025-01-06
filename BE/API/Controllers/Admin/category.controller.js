@@ -42,7 +42,7 @@ module.exports.index = async (req, res) => {
             countCategories.TOTAL
         )
         // End pagination
-        const products = await sequelize.query(`
+        const categories = await sequelize.query(`
             SELECT C.*, A1.FULLNAME AS CREATEDBY,  A2.FULLNAME AS UPDATEDBY
             FROM TCATEGORY C
             JOIN TADMIN A1 ON C.CREATED->>'$.CREATEDBY' = A1.ADMINID
@@ -60,54 +60,16 @@ module.exports.index = async (req, res) => {
             },
             type: Sequelize.QueryTypes.SELECT // Để trả về kiểu select và trả về một mảng
         });
+        if (req.query.keyword) {
+            keyword = req.query.keyword;
+        }
         res.render('admin/pages/categories/index.pug', {
             pageTitle: "Danh mục",
+            keyword: keyword,
+            sortKey: sortKey,
+            sortValue: sortValue,
             filterStatus: filterStatus,
             pagination: objectPagination,
-            products: products
-        });
-    } catch (error) {
-        console.error('Lỗi truy vấn:', error);
-        res.status(500).send("Lỗi lấy dữ liệu từ cơ sở dữ liệu.");
-    }
-}
-
-//  [GET] /admin/products/detail/:id
-module.exports.detail = async (req, res) => {
-    const id=req.params.id;
-    try {
-        const [product] = await sequelize.query(`
-            SELECT P.*, C.TITLE AS CATEGORY
-            FROM TPRODUCT P
-            JOIN TCATEGORY C ON P.CATEGORYID=C.CATEGORYID
-            WHERE PRODUCTID=:id
-        `, {
-            replacements: { id },
-            type: Sequelize.QueryTypes.SELECT // Để trả về kiểu select và trả về một mảng
-        });
-        res.render('admin/pages/products/detail.pug', {
-            pageTitle: "Cập nhật sản phẩm",
-            product: product,
-        });
-    }
-    catch (err) {
-        console.log(err)
-        res.redirect(`${systemConfig.prefixAdmin}/products`);
-    }
-}
-
-// [GET] /admin/api/product
-module.exports.create = async (req, res) => {
-    try {
-        const categories = await sequelize.query(`
-            SELECT *
-            FROM TCATEGORY;
-        `, {
-            replacements: {},
-            type: Sequelize.QueryTypes.SELECT // Để trả về kiểu select và trả về một mảng
-        });
-        res.render('admin/pages/products/create.pug', {
-            pageTitle: "Tạo sản phẩm",
             categories: categories
         });
     } catch (error) {
@@ -116,29 +78,61 @@ module.exports.create = async (req, res) => {
     }
 }
 
-// [POST] /admin/product/create
+//  [GET] /admin/category/detail/:id
+module.exports.detail = async (req, res) => {
+    const id=req.params.id;
+    try {
+        const [category] = await sequelize.query(`
+            SELECT *
+            FROM TCATEGORY 
+            WHERE SLUG=:id
+        `, {
+            replacements: { id },
+            type: Sequelize.QueryTypes.SELECT // Để trả về kiểu select và trả về một mảng
+        });
+        res.render('admin/pages/categories/detail.pug', {
+            pageTitle: category.TITLE,
+            category: category,
+        });
+    }
+    catch (err) {
+        console.log(err)
+        res.redirect(`${systemConfig.prefixAdmin}/products`);
+    }
+}
+
+// [GET] /admin/categories/create
+module.exports.create = async (req, res) => {
+    try {
+        res.render('admin/pages/categories/create.pug', {
+            pageTitle: "Tạo danh mục",
+        });
+    } catch (error) {
+        console.error('Lỗi truy vấn:', error);
+        res.status(500).send("Lỗi lấy dữ liệu từ cơ sở dữ liệu.");
+    }
+}
+
+// [POST] /admin/categories/create
 module.exports.createPost = async (req, res) => {
     const user = res.locals.user;
     const userid = user.ADMINID;
-    var { title, categoryid, featured, description, price,
-        discount, quantity, thumbnail, position, status } = req.body
-    price = parseInt(price);
-    quantity = parseInt(quantity);
-    discount = parseFloat(discount);
+    var { title, description, thumbnail, position, status } = req.body
     position = parseInt(position);
     const slug = generateSlug(title);
+
     try {
         await sequelize.query(`
-        CALL INSERT_TPRODUCT(?,?,?,?,?,?,?,?,?,?,?)
+        CALL INSERT_TCATEGORY(?,?,?,?,?,?,?)
         `, {
             replacements: [
-                categoryid, title, price, discount, thumbnail,
-                position, quantity, description, status, slug, userid
+                title, description, thumbnail,
+                position, status, slug, userid
             ],
             type: Sequelize.QueryTypes.RAW // Không yêu cầu kiểu SELECT
         });
         req.flash("success", `Create successfully!`);
-        res.redirect(`${systemConfig.prefixAdmin}/products`);
+        res.redirect(`${systemConfig.prefixAdmin}/categories`);
     } catch (error) {
         req.flash("error", `Update failed!`);
         console.error('Lỗi truy vấn:', error);
@@ -151,10 +145,10 @@ module.exports.createPost = async (req, res) => {
 module.exports.update = async (req, res) => {
     const id = req.params.id;
     try {
-        const [product] = await sequelize.query(`
+        const [category] = await sequelize.query(`
             SELECT *
-            FROM TPRODUCT
-            WHERE PRODUCTID=:id
+            FROM TCATEGORY
+            WHERE SLUG=:id
         `, {
             replacements: { id },
             type: Sequelize.QueryTypes.SELECT // Để trả về kiểu select và trả về một mảng
@@ -166,10 +160,9 @@ module.exports.update = async (req, res) => {
             replacements: {},
             type: Sequelize.QueryTypes.SELECT // Để trả về kiểu select và trả về một mảng
         });
-        res.render('admin/pages/products/update.pug', {
-            pageTitle: "Cập nhật sản phẩm",
-            product: product,
-            categories: categories
+        res.render('admin/pages/categories/update.pug', {
+            pageTitle: category.TITLE,
+            category: category
         });
     } catch (error) {
         console.error('Lỗi truy vấn:', error);
@@ -181,27 +174,31 @@ module.exports.update = async (req, res) => {
 module.exports.updatePatch = async (req, res) => {
     const user = res.locals.user;
     const userid = user.ADMINID;
-    const id=req.params.id;
+    const slug=req.params.id;
 
-    var { title, categoryid, featured, description, price,
-        discount, quantity, thumbnail, position, status } = req.body
+    var { title, description, thumbnail, position, status } = req.body
 
-    price = parseInt(price);
-    quantity = parseInt(quantity);
-    discount = parseInt(discount)/100;
     position = parseInt(position);
 
     try {
+        const [category] = await sequelize.query(`
+            SELECT *
+            FROM TCATEGORY
+            WHERE SLUG=:slug AND DELETED = 0
+            `, {
+            replacements: { slug },
+            type: Sequelize.QueryTypes.SELECT
+        });
         await sequelize.query(`
-            CALL UPDATE_TPRODUCT(?,?,?,?,?,?,?,?,?,?,?)
+            CALL UPDATE_TCATEGORY(?,?,?,?,?,?,?)
         `, {
             replacements: [
-                id, categoryid, title, price, discount, thumbnail,
-                position, quantity, description, status, userid
+                category.CATEGORYID, title, description, thumbnail,
+                position, status, userid
             ],
             type: Sequelize.QueryTypes.RAW // Không yêu cầu kiểu SELECT
         });
-        req.flash("success", `Create successfully!`);
+        req.flash("success", `Update successfully!`);
         res.redirect(`back`);
     } catch (error) {
         req.flash("error", `Update failed!`);
@@ -216,9 +213,9 @@ module.exports.delete = async (req, res) => {
     const id = req.params.id;
     try {
         await sequelize.query(`
-            UPDATE TPRODUCT
+            UPDATE TCATEGORY
             SET DELETED = 1
-            WHERE PRODUCTID=:id
+            WHERE CATEGORYID=:id
         `, {
             replacements: {id},
             type: Sequelize.QueryTypes.RAW // Không yêu cầu kiểu SELECT
@@ -227,6 +224,76 @@ module.exports.delete = async (req, res) => {
         res.redirect("back");
     } catch (error) {
         req.flash("error", `Delete failed!`);
+        console.error('Lỗi truy vấn:', error);
+        res.redirect(`back`);
+        // res.status(500).send("Lỗi lấy dữ liệu từ cơ sở dữ liệu.");
+    }
+}
+
+//  [PATCH] /admin/products/changeMulti
+module.exports.changeMulti = async (req, res) => {
+    const ids = req.body.ids.split(", ");
+    const type = req.body.type;
+    console.log(ids)
+    console.log(type)
+    try {
+        switch (type) {
+            case "Active":
+                console.log("ok")
+                await sequelize.query(`
+                    UPDATE TCATEGORY
+                    SET STATUS = "Active"
+                    WHERE CATEGORYID IN (:ids)
+                `, {
+                    replacements: { ids },
+                    type: Sequelize.QueryTypes.RAW // Không yêu cầu kiểu SELECT
+                });
+                req.flash("success", `Update successfully ${ids.length} products`)
+                break;
+            case "Inactive":
+                await sequelize.query(`
+                    UPDATE TCATEGORY
+                    SET STATUS = "Inactive"
+                    WHERE CATEGORYID IN (:ids)
+                `, {
+                    replacements: { ids },
+                    type: Sequelize.QueryTypes.RAW // Không yêu cầu kiểu SELECT
+                });
+                req.flash("success", `Update successfully ${ids.length} products`)
+                break;
+            case "delete-all":
+                await sequelize.query(`
+                    UPDATE TCATEGORY
+                    SET DELETED = 1
+                    WHERE CATEGORYID IN (:ids)
+                `, {
+                    replacements: { ids },
+                    type: Sequelize.QueryTypes.RAW // Không yêu cầu kiểu SELECT
+                });
+                req.flash("success", `Delete successfully ${ids.length} products`)
+                break;
+            case "change-position":
+                for (let item of ids) {
+                    let [id, pos] = item.split("-");
+                    pos = parseInt(pos);
+                    await sequelize.query(`
+                        UPDATE TCATEGORY
+                        SET POSITION = :pos
+                        WHERE CATEGORYID = :id
+                    `, {
+                        replacements: { pos, id },
+                        type: Sequelize.QueryTypes.RAW // Không yêu cầu kiểu SELECT
+                    });
+                }
+                req.flash("success", `Update position successfully ${ids.length} products`)
+                break;
+            default:
+                console.log("khong cos")
+                break;
+        }
+        res.redirect("back");
+    } catch (error) {
+        req.flash("error", `Change failed!`);
         console.error('Lỗi truy vấn:', error);
         res.redirect(`back`);
         // res.status(500).send("Lỗi lấy dữ liệu từ cơ sở dữ liệu.");

@@ -180,12 +180,12 @@ if (sort) {
     //end sort
 
     // clear
-    sortClear.addEventListener("click", () => {
-        url.searchParams.delete("sortKey");
-        url.searchParams.delete("sortValue");
+    // sortClear.addEventListener("click", () => {
+    //     url.searchParams.delete("sortKey");
+    //     url.searchParams.delete("sortValue");
 
-        window.location.href = url.href;
-    })
+    //     window.location.href = url.href;
+    // })
     // end clear
 
     // thêm selected cho option
@@ -198,7 +198,6 @@ if (sort) {
     }
 }
 // end sort
-
 
 // delete item
 const buttonDeleteItem = document.querySelectorAll("[button-delete-item]");
@@ -213,7 +212,6 @@ if (buttonDeleteItem.length) {
                 const id = button.getAttribute("button-id");
                 const action = path + `/${id}?_method=DELETE`;
                 formDeleteItem.action = action;
-
                 formDeleteItem.submit();
             }
         })

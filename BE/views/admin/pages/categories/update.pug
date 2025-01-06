@@ -1,0 +1,80 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main 
+    //- if(role.permissions.includes("products_update"))
+    h1(class="mb-4") Chỉnh sửa sản phẩm
+
+    +alert-success(3000)
+    +alert-error(3000)
+    
+    form(
+        action=`${prefixAdmin}/categories/update/${category.SLUG}?_method=PATCH`
+        id="form-update-product"
+        method="POST"
+    )
+        div(class="form-group")
+            lable(for="title") Tiêu đề
+            input(
+                type="text"
+                class="form-control long-input"
+                id="title"
+                name="title"
+                value = category.TITLE
+            )
+        
+        div(class="form-group")
+            lable(for="desc") Mô tả
+            textarea(
+                class="form-control"
+                id="desc"
+                name="description"
+                rows="5"
+            ) #{category.DESCRIPTION} 
+        div(class="form-group")
+            lable(for="thumbnail") Ảnh
+            input(
+                type="text"
+                class="form-control"
+                id="thumbnail"
+                name="thumbnail"
+                value=category.THUMBNAIL
+            )
+            
+        div(class="form-group")
+            lable(for="position") Vị trí
+            input(
+                type="number"
+                class="form-control"
+                id="position"
+                name="position"
+                placeholder="Tự động tăng"
+                min="1"
+                value=category.POSITION
+            )
+
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="statusActive"
+                name="status"
+                value="Active"
+                checked = (category.STATUS=="Active"? true: false)
+            )
+            label(for="statusActive" class="form-check-label") Hoạt động 
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="statusInActive"
+                name="status"
+                value="Inactive"
+                checked = (category.STATUS=="Inactive"? true: false)
+            )
+            label(for="statusInActive" class="form-check-label") Dừng hoạt động
+        div(class="form-group")
+            button(
+                type="submit"
+                class="btn btn-primary"
+            ) Cập nhật

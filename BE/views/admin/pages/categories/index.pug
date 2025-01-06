@@ -5,9 +5,12 @@ include ../../mixins/search.pug
 include ../../mixins/filterStatus.pug
 include ../../mixins/sort.pug
 include ../../mixins/form-change-multi.pug
+include ../../mixins/alert.pug
 
 block main 
     //- if(role.permissions.includes("products-category_view"))
+    +alert-success("3000")
+    +alert-error("3000")
     .card.mb-3
         .card-header Bộ lọc và tìm kiếm
         .card-body 
@@ -15,7 +18,7 @@ block main
                 .col-4
                     +filter-status(filterStatus)
                 .col-4 
-                     +sort()
+                     +sort(sortKey,sortValue)
                 .col-4 
                     form(id="form-search")
                         .input-group
@@ -25,7 +28,7 @@ block main
             .card-body 
                 .row 
                     .col-10 
-                        +box-form-change-multi(`${prefixAdmin}/products/change-multi?_method=PATCH`)
+                        +box-form-change-multi(`${prefixAdmin}/categories/change-multi?_method=PATCH`)
                     .col-2
                             //- if(role.permissions.includes("products-category_create"))
                             a(
@@ -45,15 +48,15 @@ block main
                             th Hình ảnh
                             th Tiêu đề
                             th Vị trí
+                            th Trạng thái 
                             th Người tạo 
                             th Người cập nhật
-                            th Trạng thái 
                             th Hành động
                     tbody 
-                        each item, index in products
+                        each item, index in categories
                             tr 
                                 th  
-                                    input(type="checkbox",name="id" value=item.PRODUCTID)
+                                    input(type="checkbox",name="id" value=item.CATEGORYID)
                                 //- td #{pagination.limitItems *(pagination.currentPage-1)+index+1}
                                 td #{index+1}
                                 td
@@ -116,22 +119,23 @@ block main
                                     +formatDateTime(item.UPDATED.UPDATEDAT)
                                 td 
                                     a(
-                                        href=`${prefixAdmin}/products/detail/${item.SLUG}`
+                                        href=`${prefixAdmin}/categories/detail/${item.SLUG}`
                                         class="btn btn-secondary btn-sm"
                                     ) Chi tiết
 
                                     //if(role.permissions.includes("products_update"))
                                     a(
-                                        href=`${prefixAdmin}/products/update/${item.SLUG}`
+                                        href=`${prefixAdmin}/categories/update/${item.SLUG}`
                                         class="btn btn-warning btn-sm") Sửa
                                 
                                     //if(role.permissions.includes("products_delete"))
                                     button(class="btn btn-danger btn-sm ml-l"
                                         button-delete-item
-                                        button-id=item.PRODUCTID
+                                        button-id=item.CATEGORYID
                                     ) Xóa
 
     +box-pagination(pagination)
+    
     form(
         action=""
         method='POST'

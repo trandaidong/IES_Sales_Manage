@@ -1,0 +1,76 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main 
+    //- if(role.permissions.includes("products_create"))
+    h1(class="mb-4") Thêm mới danh mục
+    +alert-error(3000)
+
+    form(
+        action=`${prefixAdmin}/categories/create`
+        id="form-create-product"
+        method="POST"
+    )
+        div(class="form-group")
+            lable(for="title") Tiêu đề
+            input(
+                type="text"
+                class="form-control"
+                id="title"
+                name="title"
+                required
+            )
+        div(class="form-group")
+            lable(for="desc") Mô tả
+            textarea(
+                class="form-control textarea-mce"
+                id="desc"
+                name="description"
+                rows="5"
+            )
+
+        div(class="form-group")
+            lable(for="thumbnail") URL Ảnh
+            input(
+                type="text"
+                class="form-control"
+                id="thumbnail"
+                name="thumbnail"
+            )
+
+        div(class="form-group")
+            lable(for="position") Vị trí
+            input(
+                type="number"
+                class="form-control"
+                id="position"
+                name="position"
+                value=1
+                min="1"
+            )
+
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="statusActive"
+                name="status"
+                value="Active"
+                checked
+            )
+            label(for="statusActive" class="form-check-label") Hoạt động 
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="statusInActive"
+                name="status"
+                value="Inactive"
+            )
+            label(for="statusInActive" class="form-check-label") Dừng hoạt động
+        div(class="form-group")
+            button(
+                type="submit"
+                class="btn btn-primary"
+            ) Tạo mới
+    //- script(src=`${prefixAdmin}/js/script.js`)

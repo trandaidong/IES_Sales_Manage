@@ -4,16 +4,19 @@ const controller = require('../../Controllers/Admin/category.controller');
 
 router.get('/', controller.index);
 
-// router.get('/detail/:id', controller.detail)
+router.get('/detail/:id', controller.detail)
 
-// router.get('/create', controller.create);
+router.get('/create', controller.create);
 
-// router.post('/create', controller.createPost);
+router.post('/create', controller.createPost);
 
-// router.get('/update/:id', controller.update)
+router.get('/update/:id', controller.update)
 
-// router.patch('/update/:id', controller.updatePatch)
+router.patch('/update/:id', controller.updatePatch)
 
-// router.delete('/delete/:id', controller.delete);
+router.delete('/delete/:id', controller.delete);
+
+router.patch('/change-multi', controller.changeMulti)
+
 
 module.exports = router;
