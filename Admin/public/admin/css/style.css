@@ -1,11 +1,12 @@
-.header{
+.header {
     background: #202020;
     padding: 10px 0;
     position: sticky;
     top: 0;
     z-index: 999;
 }
-.header .inner-logo a{
+
+.header .inner-logo a {
     font-size: 24px;
     font-weight: 700;
     color: #fff;
@@ -13,76 +14,93 @@
 
 
 
-.body .sider{
-    width: 150px;
-    background: #323232;
-    color : #fff;
-    height: calc(100vh - 56px);
+.body .sider {
+    width: 250px;
+    background: #2d5167;
+    color: #fff;
+    height: 100%;
     position: fixed;
-    top: 56px;
+    top: 0px;
     left: 0px;
 }
-.body .main{
+
+/* .body .main {
     margin: 15px;
     position: relative;
     left: 150px;
     width: calc(100% - 180px);
-}
+} */
 
-.sider .inner-menu ul{
+.sider .inner-menu ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
-.sider .inner-menu ul li a{
-    color: #fff;
+
+.sider .inner-menu ul li a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 4px;
     display: block;
-    padding: 6px 10px;
-    border-radius: 1px solid #515151;
+    transition: background-color 0.3s, color 0.3s;
 }
+.sider .inner-menu ul li a:hover {
+    background-color: #ffffff;
+    color: #2d5167;
+}
+
 .pagination-container {
     display: flex;
-    justify-content: center; /* Căn giữa theo chiều ngang */
-    align-items: center;    /* Căn giữa theo chiều dọc nếu cần */
+    justify-content: center;
+    /* Căn giữa theo chiều ngang */
+    align-items: center;
+    /* Căn giữa theo chiều dọc nếu cần */
     /* margin: 20px 0;  */
 }
 
 /* show alert */
-[show-alert]{
+[show-alert] {
     position: fixed;
     top: 70px;
     right: 15px;
     z-index: 9999;
 }
-[show-alert].alert-hidden{
+
+[show-alert].alert-hidden {
     animation-name: alert-hidden;
     animation-duration: 0.5s;
     animation-fill-mode: both;
 }
-@keyframes alert-hidden  {
-    from{
+
+@keyframes alert-hidden {
+    from {
         right: 15px;
     }
-    to{
+
+    to {
         right: -100%;
         display: none;
     }
 }
-[show-alert] [close-alert]{
-    background:#ffffff;
+
+[show-alert] [close-alert] {
+    background: #ffffff;
     display: inline-block;
     width: 24px;
     height: 24px;
-    line-height:24px;
+    line-height: 24px;
     text-align: center;
     font-weight: 600;
     border-radius: 50%;
     cursor: pointer;
 }
+
 /* end show alert */
 
 /* image preview */
-.image-preview{
+.image-preview {
     width: 150px;
     height: auto;
     margin-top: 15px;
@@ -90,24 +108,32 @@
     padding: 15px;
     border-radius: 5px;
 }
-.image-preview[src=""]{
+
+.image-preview[src=""] {
     display: none;
 }
+
 /* end image preview */
 
 .long-input {
-    width: 100%; /* Chiều rộng tối đa */
-    overflow: hidden; /* Ẩn phần tràn */
-    text-overflow: ellipsis; /* Thêm dấu "..." nếu quá dài */
-    white-space: nowrap; /* Không cho xuống dòng */
+    width: 100%;
+    /* Chiều rộng tối đa */
+    overflow: hidden;
+    /* Ẩn phần tràn */
+    text-overflow: ellipsis;
+    /* Thêm dấu "..." nếu quá dài */
+    white-space: nowrap;
+    /* Không cho xuống dòng */
 }
 
 /* GHI ĐỀ BOOTSTRAP */
-.btn-outline-success{
+.btn-outline-success {
     margin-bottom: 30px;
 }
+
 /* START SORT */
-[sort-select]{
+[sort-select] {
     width: 200px;
 }
+
 /* END SORT */

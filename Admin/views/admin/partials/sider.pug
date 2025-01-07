@@ -1,0 +1,48 @@
+.sider
+    .inner-menu 
+        ul
+            li
+                a(href='#') QUẢN LÝ 
+                li
+                    a(href=`${prefixAdmin}/dashboard`)
+                        span.inner-icon
+                            i.fa-solid.fa-table-columns
+                        span.inner-text Tổng quan
+
+                //- if(role.permissions.includes("products-category_view"))
+                li  
+                    a(href=`${prefixAdmin}/categories`) Danh mục
+
+                //- if(role.permissions.includes("products_view"))
+                li  
+                    a(href=`${prefixAdmin}/products`) Sản phẩm
+                
+                li  
+                    a(href=`${prefixAdmin}/orders`) Đơn hàng
+
+                li  
+                    a(href=`${prefixAdmin}/accounts`) Quản lý
+                
+                li  
+                    a(href=`${prefixAdmin}/customers`) Khách hàng
+
+                li  
+                    a(href=`${prefixAdmin}/statistics`) Thống kê
+
+                li  
+                    a(href=`${prefixAdmin}/roles`) Nhóm quyền
+                
+                li  
+                    a(href=`${prefixAdmin}/permissions`) Phân quyền
+                    
+                li  
+                    a(href=`${prefixAdmin}/settings/general`) Cài đặt chung
+
+            li
+                a(href='#') Tài khoản
+                ul
+                    li
+                        a(href=`${prefixAdmin}/api/v1/auth/logout`)
+                        span.inner-icon
+                            i.fa-solid.fa-right-from-bracket
+                        span.inner-text Đăng xuất
