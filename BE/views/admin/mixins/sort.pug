@@ -1,4 +1,4 @@
-mixin sort(sortKey, sortValue)
+mixin sort(sortKey, sortValue, position, price, title)
     - let selectedValue = `${sortKey}-${sortValue}`;
     div(sort class="row")
         select(
@@ -6,12 +6,15 @@ mixin sort(sortKey, sortValue)
             name="sort"
             sort-select
         )   
-            option(value="POSITION-ASC" selected=(selectedValue === "POSITION-ASC")) Vị trí tăng dần
-            option(value="POSITION-DESC" selected=(selectedValue === "POSITION-DESC")) Vị trí giảm dần
-            option(value="PRICE-ASC" selected=(selectedValue === "PRICE-ASC")) Giá tăng dần
-            option(value="PRICE-DESC" selected=(selectedValue === "PRICE-DESC")) Giá giảm dần
-            option(value="TITLE-ASC" selected=(selectedValue === "TITLE-ASC")) Tiêu đề A - Z
-            option(value="TITLE-DESC" selected=(selectedValue === "TITLE-DESC")) Tiêu đề Z - A
+            if(position)
+                option(value="POSITION-ASC" selected=(selectedValue === "POSITION-ASC")) Vị trí tăng dần
+                option(value="POSITION-DESC" selected=(selectedValue === "POSITION-DESC")) Vị trí giảm dần
+            if(price)
+                option(value="PRICE-ASC" selected=(selectedValue === "PRICE-ASC")) Giá tăng dần
+                option(value="PRICE-DESC" selected=(selectedValue === "PRICE-DESC")) Giá giảm dần
+            if(title)
+                option(value="TITLE-ASC" selected=(selectedValue === "TITLE-ASC")) Tiêu đề A - Z
+                option(value="TITLE-DESC" selected=(selectedValue === "TITLE-DESC")) Tiêu đề Z - A
         //- button(
         //-     class="btn btn-danger mt-2"
         //-     sort-clear

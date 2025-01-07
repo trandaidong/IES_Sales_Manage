@@ -1,0 +1,88 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main 
+    //- if(role.permissions.includes("products_update"))
+    h1(class="mb-4") Chỉnh sửa khách hàng
+
+    +alert-success(3000)
+    +alert-error(3000)
+    
+    form(
+        action=`${prefixAdmin}/accounts/update/${account.ADMINID}?_method=PATCH`
+        id="form-update-product"
+        method="POST"
+    )
+        div(class="form-group")
+            lable(for="fullname") Họ Tên
+            input(
+                type="text"
+                class="form-control long-input"
+                id="fullname"
+                name="fullname"
+                value = account.FULLNAME
+            )
+
+
+        div(class="form-group")
+            lable(for="avatar") Avatar
+            input(
+                type="text"
+                class="form-control"
+                id="avatar"
+                name="avatar"
+                value=account.AVATAR
+            )
+
+        div(class="form-group")
+            lable(for="email") Email
+            input(
+                type="text"
+                class="form-control"
+                id="email"
+                name="email"
+                value = account.EMAIL
+            )
+        div(class="form-group")
+            lable(for="sdt") SĐT
+            input(
+                type="text"
+                class="form-control"
+                id="sdt"
+                name="sdt"
+                value = account.PHONE
+            )
+        div(class="form-group")
+            lable(for="password") Mật khẩu
+            input(
+                type="text"
+                class="form-control"
+                id="password"
+                name="password"
+                value = account.PASSWORD
+            )
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="statusActive"
+                name="status"
+                value="Active"
+                checked = (account.STATUS=="Active"? true: false)
+            )
+            label(for="statusActive" class="form-check-label") Hoạt động 
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="statusInActive"
+                name="status"
+                value="Inactive"
+                checked = (account.STATUS=="Inactive"? true: false)
+            )
+            label(for="statusInActive" class="form-check-label") Dừng hoạt động
+        div(class="form-group")
+            button(
+                type="submit"
+                class="btn btn-primary"
+            ) Cập nhật

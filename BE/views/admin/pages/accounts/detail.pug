@@ -1,0 +1,31 @@
+extends ../../layouts/default.pug
+
+block main 
+
+    if(account.FULLNAME)
+        h1(class="mb-4") #{account.FULLNAME}
+
+    if(account.AVATAR)
+        div(class="mb-4")
+            img(
+                src=account.AVATAR
+                style="width: 100px"
+            )
+    
+    if(account.EMAIL)
+        div(class="mb-4") #{account.EMAIL}
+    if(account.PHONE)
+        div(class="mb-4") #{account.PHONE}
+    if(account.PASSWORD)
+        div(class="mb-4") #{account.PASSWORD}
+    if(account.STATUS)
+        div(class="mb-4")
+            span Trạng thái: 
+            if(account.STATUS=="Active")
+                span(class="badge badge-success") Hoạt động
+            else 
+                span(class="badge badge-danger") Dừng hoạt động
+
+    a(
+        href=`${prefixAdmin}/accounts/update/${account.ADMINID}`
+        class="btn btn-warning btn-sm") Chỉnh sửa

@@ -1,6 +1,5 @@
 extends ../../layouts/default.pug
 include ../../mixins/alert.pug
-include ../../mixins/select-tree.pug
 
 block main 
     h1(class="mb-4") Cài đặt chung
@@ -10,7 +9,6 @@ block main
     form(
         action=`${prefixAdmin}/settings/general?_method=PATCH`
         method="POST"
-        enctype="multipart/form-data"
     )
         div(class="form-group")
             lable(for="websiteName") Tên website
@@ -19,25 +17,16 @@ block main
                 class="form-control"
                 id="websiteName"
                 name="websiteName"
-                value=(settingGeneral? settingGeneral.websiteName: "")
+                value=(settingGeneral? settingGeneral.WEBNAME: "")
             )
-        div(
-            class="form-group"
-            upload-image
-        )
-            label(for="logo") Logo
+        div(class="form-group")
+            lable(for="logo") Logo
             input(
-                type="file"
-                class="form-control-file"
+                type="text"
+                class="form-control"
                 id="logo"
                 name="logo"
-                accept="image/*"
-                upload-image-input
-            )
-            img(
-                src=value=(settingGeneral? settingGeneral.logo: "")
-                class="image-preview"
-                upload-image-preview
+                value=(settingGeneral? settingGeneral.LOGO: "")
             )
         div(class="form-group")
             lable(for="phone") Số điện thoại
@@ -46,16 +35,16 @@ block main
                 class="form-control"
                 id="phone"
                 name="phone"
-                value=(settingGeneral? settingGeneral.phone: "")
+                value=(settingGeneral? settingGeneral.PHONE: "")
             )
         div(class="form-group")
-            lable(for="email") Ẻmail
+            lable(for="email") Email
             input(
                 type="email"
                 class="form-control"
                 id="email"
                 name="email"
-                value=(settingGeneral? settingGeneral.email: "")
+                value=(settingGeneral? settingGeneral.EMAIL: "")
             )
         div(class="form-group")
             lable(for="address") Địa chỉ
@@ -64,7 +53,7 @@ block main
                 class="form-control"
                 id="address"
                 name="address"
-                value=(settingGeneral? settingGeneral.address: "")
+                value=(settingGeneral? settingGeneral.ADDRESS: "")
             )
         div(class="form-group")
             lable(for="copyright") Copyright
@@ -73,7 +62,7 @@ block main
                 class="form-control"
                 id="copyright"
                 name="copyright"
-                value=(settingGeneral? settingGeneral.copyright: "")
+                value=(settingGeneral? settingGeneral.COPYRIGHT: "")
             )
         div(class="form-group")
             button(

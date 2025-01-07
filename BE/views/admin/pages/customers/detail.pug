@@ -1,0 +1,31 @@
+extends ../../layouts/default.pug
+
+block main 
+
+    if(customer.FULLNAME)
+        h1(class="mb-4") #{customer.FULLNAME}
+
+    if(customer.AVATAR)
+        div(class="mb-4")
+            img(
+                src=customer.AVATAR
+                style="width: 100px"
+            )
+    
+    if(customer.EMAIL)
+        div(class="mb-4") #{customer.EMAIL}
+    if(customer.PHONE)
+        div(class="mb-4") #{customer.PHONE}
+    if(customer.PASSWORD)
+        div(class="mb-4") #{customer.PASSWORD}
+    if(customer.STATUS)
+        div(class="mb-4")
+            span Trạng thái: 
+            if(customer.STATUS=="Active")
+                span(class="badge badge-success") Hoạt động
+            else 
+                span(class="badge badge-danger") Dừng hoạt động
+
+    a(
+        href=`${prefixAdmin}/customers/update/${customer.USERID}`
+        class="btn btn-warning btn-sm") Chỉnh sửa
