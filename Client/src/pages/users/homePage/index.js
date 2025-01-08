@@ -1,133 +1,122 @@
-// trang này dùng để hiển thị trang chủ của người dùng
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import cat1Img from "assets/users/images/categories/cat-1.jpg";
-import cat2Img from "assets/users/images/categories/cat-2.jpg";
-import cat3Img from "assets/users/images/categories/cat-3.jpg";
-import cat4Img from "assets/users/images/categories/cat-4.jpg";
-import cat5Img from "assets/users/images/categories/cat-5.jpg";
-import banner1Img from "assets/users/images/banner/banner-1.jpg";
-import banner2Img from "assets/users/images/banner/banner-2.jpg";
 import "./style.scss";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { ProductCard } from "component";
-import { featProducts } from "utils/common";
 
 const HomePage = () => {
+  const [products, setProducts] = useState([]); // Dữ liệu sản phẩm
+  const [sliderItems, setSliderItems] = useState([]); // Dữ liệu slider
+  const [banners, setBanners] = useState([]); // Dữ liệu banner
+
   const responsive = {
-    superLargeDesktop: {
-      breakpoint: { max: 4000, min: 3000 },
-      items: 5,
-    },
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 4,
-    },
-    tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 2,
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-    },
+    superLargeDesktop: { breakpoint: { max: 4000, min: 3000 }, items: 5 },
+    desktop: { breakpoint: { max: 3000, min: 1024 }, items: 4 },
+    tablet: { breakpoint: { max: 1024, min: 464 }, items: 2 },
+    mobile: { breakpoint: { max: 464, min: 0 }, items: 1 },
   };
-  const sliderItems = [
-    {
-      bgImg: cat1Img,
-      name: "Fedamancy",
-    },
-    {
-      bgImg: cat2Img,
-      name: "Solitude",
-    },
-    {
-      bgImg: cat3Img,
-      name: "Opacarophile",
-    },
-    {
-      bgImg: cat4Img,
-      name: "Flechazo",
-    },
-    {
-      bgImg: cat5Img,
-      name: "Senendipity",
-    },
-  ];
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/products"); // Gọi API
+        const data = await response.json();
+
+        // Cập nhật dữ liệu slider và banner từ products
+        setProducts(data.products || []); // Toàn bộ sản phẩm
+        setSliderItems(data.products.slice(0, 5)); // 5 sản phẩm đầu tiên cho slider
+        setBanners(data.products.slice(0, 3)); // 3 sản phẩm đầu tiên cho banner
+      } catch (error) {
+        console.error("Lỗi khi gọi API products:", error);
+      }
+    };
+
+    fetchProducts(); // Gọi API khi component được render lần đầu
+  }, []);
 
   const renderFeaturedProducts = (data) => {
     const tabList = [];
     const tabPanels = [];
 
-    // object.keys(data) trả về mảng các key của object, các key như là all, hehe
-    Object.keys(data).forEach((key, index) => {
-      tabList.push(<Tab key={index}> {data[key].tittle} </Tab>);
+    // Hiển thị theo định dạng tab (các danh mục giả định)
+    const categories = ["Tất cả", "Danh mục 1", "Danh mục 2"];
+    categories.forEach((category, index) => {
+      tabList.push(<Tab key={index}>{category}</Tab>);
 
-      const tabPanel = [];
-      data[key].products.forEach((item, j) => {
-        tabPanel.push(
-          <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12" key={j}>
-            <ProductCard name={item.name} img={item.img} price={item.price} />
-          </div>
-        );
-      });
-      tabPanels.push(tabPanel);
+      const filteredProducts = index === 0 ? data : data.slice(0, 4); // Giả lập lọc danh mục
+
+      const tabPanel = filteredProducts.map((item, j) => (
+        <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12" key={j}>
+          <ProductCard
+            name={item.TITLE}
+            img={`/assets/images/${item.THUMBNAIL}`}
+            price={item.PRICE}
+          />
+        </div>
+      ));
+
+      tabPanels.push(
+        <TabPanel key={index}>
+          <div className="row">{tabPanel}</div>
+        </TabPanel>
+      );
     });
+
     return (
       <Tabs>
         <TabList>{tabList}</TabList>
-        {tabPanels.map((item, key) => (
-          //map có tác dụng duyệt qua mảng tabPanel để render ra các tabPanel, tabPanel là các sản phẩm như hình ảnh, tên, giá
-          <TabPanel key={key}>
-            <div className="row">{item}</div>
-          </TabPanel>
-        ))}
+        {tabPanels}
       </Tabs>
     );
   };
+
   return (
     <>
-      {/*Categories Begin*/}
+      {/* Categories Slider */}
       <div className="container container_categories_slider">
         <Carousel responsive={responsive} className="categories_slider">
           {sliderItems.map((item, key) => (
             <div
               className="categories_slider_item"
-              style={{ backgroundImage: `url(${item.bgImg})` }}
+              style={{
+                backgroundImage: `url(/assets/images/${item.THUMBNAIL})`,
+              }}
               key={key}
             >
-              <p>{item.name}</p>
+              <p>{item.TITLE}</p>
             </div>
           ))}
         </Carousel>
       </div>
-      {/*Categories End*/}
 
-      {/*Featured Begin */}
+      {/* Featured Products */}
       <div className="container">
         <div className="featured">
           <div className="section-title">
             <h2>Sản phẩm nổi bật</h2>
           </div>
-          {renderFeaturedProducts(featProducts)}
+          {products.length > 0 ? (
+            renderFeaturedProducts(products)
+          ) : (
+            <p>Đang tải sản phẩm...</p>
+          )}
         </div>
       </div>
-      {/*Featured End */}
 
-      {/* Banner Begin */}
+      {/* Banner Slider */}
       <div className="container">
-        <div className="banner">
-          <div className="banner_pic">
-            <img src={banner1Img} alt="bannner" />
-          </div>
-          <div className="banner_pic">
-            <img src={banner2Img} alt="bannner" />
-          </div>
-        </div>
+        <Carousel responsive={responsive} className="banner_slider">
+          {banners.map((banner, index) => (
+            <div className="banner_pic" key={index}>
+              <img
+                src={`/assets/images/${banner.THUMBNAIL}`}
+                alt={`Banner ${index + 1}`}
+              />
+            </div>
+          ))}
+        </Carousel>
       </div>
-
-      {/* Banner End  */}
     </>
   );
 };
