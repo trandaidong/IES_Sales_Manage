@@ -1,5 +1,5 @@
 // trang này dùng để hiển thị trang chủ của người dùng
-import { memo,useState } from "react";
+import { memo, useEffect, useState } from "react";
 import Breadcrumb from "../theme/breadcrumb";
 import "./style.scss";
 import cat1Img from "assets/users/images/categories/cat-1.jpg";
@@ -71,6 +71,7 @@ const CommentForm = ({ onAddComment }) => {
 
 const ProductDetailPage = () => {
   const imgs = [cat1Img, cat2Img, cat3Img];
+  const [products, setProducts] = useState([]); // Dữ liệu sản phẩm
 
    // State cho phần bình luận
    const [comments, setComments] = useState([
@@ -89,6 +90,22 @@ const ProductDetailPage = () => {
   const addComment = (newComment) => {
     setComments([newComment, ...comments]);
   };
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/products"); // Gọi API
+        const data = await response.json();
+
+        // Cập nhật dữ liệu slider và banner từ products
+        setProducts(data.products || []); // Toàn bộ sản phẩm
+      } catch (error) {
+        console.error("Lỗi khi gọi API products:", error);
+      }
+    };
+
+    fetchProducts(); // Gọi API khi component được render lần đầu
+  }, []);
 
   return (
     <>
@@ -211,11 +228,15 @@ const ProductDetailPage = () => {
           <h2>Sản phẩm tương tự</h2>
         </div>
         <div className="row">
-          {featProducts.all.products.map((item, key) => (
-            <div key={key} className="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-              <ProductCard img={item.img} name={item.name} price={item.price} />
-            </div>
-          ))}
+        {products.map((item, key) => (
+                <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12" key={key}>
+                   <ProductCard
+            name={item.TITLE}
+            img={`/assets/images/${item.THUMBNAIL}`}
+            price={item.PRICE}
+          />
+                </div>
+              ))}
         </div>
       </div>
     </>

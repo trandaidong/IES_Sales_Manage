@@ -20,6 +20,7 @@ import { Link, Router, useLocation } from "react-router-dom";
 import { MdEmail } from "react-icons/md";
 import { formatter } from "utils/formater";
 import { ROUTERS } from "utils/router";
+import { useNavigate } from "react-router-dom"; // Hook điều hướng
 
 // list danh sách sản phẩm
 export const categories = [
@@ -33,11 +34,16 @@ export const categories = [
 // tạo ra 1 function Header để hiển thị header của trang web
 const Header = () => {
   const location = useLocation();
+
   const [isShowHumberger, setShowHumberger] = useState(false);
   const [isHome, setIsHome] = useState(location.pathname.length <= 1);
+  const [isShowCategories, setShowCategories] = useState(isHome);
   // khi mình list đường dẫn thì nếu nó không có phần sau thì hiểu là nó không có homepage lý do nó bế hơn 1
   // lý do length <= 1 là vì nó sẽ lấy ra đường dẫn là / thôi
-  const [isShowCategories, setShowCategories] = useState(isHome);
+  const [categories, setCategories] = useState([]); // Danh mục lấy từ API
+
+  const [searchQuery, setSearchQuery] = useState(""); // Dữ liệu từ input tìm kiếm
+  const navigate = useNavigate(); // Hook để điều hướng
 
   //list menu
   const [menus, setMenus] = useState([
@@ -53,20 +59,7 @@ const Header = () => {
       name: "Sản phẩm",
       path: "",
       isShowSubmenu: false,
-      child: [
-        {
-          name: "Thịt",
-          path: "",
-        },
-        {
-          name: "Rau củ",
-          path: "",
-        },
-        {
-          name: "Thức ăn nhanh",
-          path: "",
-        },
-      ],
+      child: [],
     },
     {
       name: "Bài viết",
@@ -84,11 +77,73 @@ const Header = () => {
     setIsHome(isHome);
     setShowCategories(isHome);
   }, [location]);
+
+  const handleSearch = (e) => {
+    e.preventDefault(); // Ngăn hành vi mặc định (làm mới trang)
+    console.log("Từ khóa tìm kiếm:", searchQuery); // In từ khóa ra console
+    if (!searchQuery.trim()) return; // Không làm gì nếu input rỗng
+    // Điều hướng sang trang /search với từ khóa tìm kiếm qua state
+    navigate(ROUTERS.USER.SEARCH, { state: { searchQuery } });
+  };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/categories");
+        const data = await response.json();
+        console.log("Danh mục từ API:", data.categories); // Kiểm tra dữ liệu trả về
+        setCategories(data.categories || []); // Cập nhật danh mục
+      } catch (error) {
+        console.error("Lỗi khi gọi API lấy danh mục:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/categories");
+        const data = await response.json();
+
+        // Cập nhật danh mục (child) của "Sản phẩm"
+        setMenus((prevMenus) =>
+          prevMenus.map((menu) =>
+            menu.name === "Sản phẩm"
+              ? {
+                  ...menu,
+                  child: data.categories.map((cat) => ({
+                    name: cat.TITLE,
+                    path: `/category/${cat.CATEGORYID}`,
+                  })),
+                }
+              : menu
+          )
+        );
+      } catch (error) {
+        console.error("Lỗi khi lấy danh mục sản phẩm:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Xử lý toggle submenu
+  const toggleSubmenu = (menuKey) => {
+    setMenus((prevMenus) =>
+      prevMenus.map((menu, index) =>
+        index === menuKey
+          ? { ...menu, isShowSubmenu: !menu.isShowSubmenu }
+          : menu
+      )
+    );
+  };
   return (
     <>
       {/* thanh bên trái khi respnsive */}
       <div
-        className={`humberger_menu_overplay${isShowHumberger ? " active" : ""}`}
+        className={`ger_menu_overplay${isShowHumberger ? " active" : ""}`}
         onClick={() => setShowHumberger(false)}
       />
       <div
@@ -143,11 +198,13 @@ const Header = () => {
                       menu.isShowSubmenu ? " show_submenu" : ""
                     }`}
                   >
-                    {menu.child.map((childItem, childKey) => (
-                      <li key={`${menuKey}-${childKey}`}>
-                        <Link to={childItem.path}>{childItem.name}</Link>
-                      </li>
-                    ))}
+                    {categories.map((category, index) => (
+                  <li key={index}>
+                    <Link to={`${ROUTERS.USER.PRODUCTS}/${category.SLUG}`}>
+                      {category.TITLE}
+                    </Link>
+                  </li>
+                ))}
                   </ul>
                 )}
               </li>
@@ -279,19 +336,32 @@ const Header = () => {
               <AiOutlineMenu />
               Danh sách sản phẩm
             </div>
-            <ul className={isShowCategories ? "" : "hidden"}>
-              {categories.map((category, key) => (
-                <li key={key}>
-                  <Link to={ROUTERS.USER.PRODUCTS}>{category}</Link>
-                </li>
-              ))}
-            </ul>
+            {/* Hiển thị danh mục khi có dữ liệu và trạng thái bật */}
+            {isShowCategories && categories.length > 0 && (
+              <ul className="categories_list">
+                {categories.map((category, index) => (
+                  <li key={index}>
+                    <Link to={`${ROUTERS.USER.PRODUCTS}/${category.SLUG}`}>
+                      {category.TITLE}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {isShowCategories && categories.length === 0 && (
+              <p>Không có danh mục nào.</p>
+            )}
           </div>
           <div className="col-lg-9 col-md-12 col-sm-12 col-xs-12 hero_search_container">
             <div className="hero_search">
               <div className="hero_search_form">
-                <form>
-                  <input type="text" placeholder="Bạn đang tìm gì?" />
+                <form onSubmit={handleSearch}>
+                  <input
+                    type="text"
+                    placeholder="Bạn đang tìm gì?"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)} // Cập nhật input}
+                  />
                   <button type="submit">Tìm kiếm</button>
                 </form>
               </div>

@@ -7,5 +7,6 @@ export const ROUTERS = {
     PRODUCT: "/san-pham/chi-tiet/:id",
     SHOPPING_CART: "/gio-hang",
     CHECKOUT: "/thanh-toan",
+    SEARCH: "/tim-kiem",
   },
 };
