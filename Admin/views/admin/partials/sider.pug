@@ -1,48 +1,66 @@
-.sider
-    .inner-menu 
+aside.sidebar
+  h1 ADMIN
+  nav
+    ul.menu-left
+      li
+        a(href='#') QUẢN LÝ
         ul
-            li
-                a(href='#') QUẢN LÝ 
-                li
-                    a(href=`${prefixAdmin}/dashboard`)
-                        span.inner-icon
-                            i.fa-solid.fa-table-columns
-                        span.inner-text Tổng quan
-
-                //- if(role.permissions.includes("products-category_view"))
-                li  
-                    a(href=`${prefixAdmin}/categories`) Danh mục
-
-                //- if(role.permissions.includes("products_view"))
-                li  
-                    a(href=`${prefixAdmin}/products`) Sản phẩm
-                
-                li  
-                    a(href=`${prefixAdmin}/orders`) Đơn hàng
-
-                li  
-                    a(href=`${prefixAdmin}/accounts`) Quản lý
-                
-                li  
-                    a(href=`${prefixAdmin}/customers`) Khách hàng
-
-                li  
-                    a(href=`${prefixAdmin}/statistics`) Thống kê
-
-                li  
-                    a(href=`${prefixAdmin}/roles`) Nhóm quyền
-                
-                li  
-                    a(href=`${prefixAdmin}/permissions`) Phân quyền
-                    
-                li  
-                    a(href=`${prefixAdmin}/settings/general`) Cài đặt chung
-
-            li
-                a(href='#') Tài khoản
-                ul
-                    li
-                        a(href=`${prefixAdmin}/api/v1/auth/logout`)
-                        span.inner-icon
-                            i.fa-solid.fa-right-from-bracket
-                        span.inner-text Đăng xuất
+          li
+            a(href=`${prefixAdmin}/dashboard`)
+              span.inner-icon
+                i.fa-solid.fa-table-columns
+              span.inner-text Tổng quan
+          li
+            a(href=`${prefixAdmin}/categories`)
+              span.inner-icon
+                i.fa.fa-users
+              span.inner-text Quản lý danh mục
+            li  
+              a(href=`${prefixAdmin}/products`)
+                span.inner-icon
+                  i.fa-brands.fa-product-hunt
+                span.inner-text Quản lý sản phẩm
+            li  
+              a(href=`${prefixAdmin}/orders`) 
+                span.inner-icon
+                  i.fa.fa-file-invoice-dollar
+                span.inner-text Quản lý đơn hàng    
+            li  
+              a(href=`${prefixAdmin}/accounts`)
+                  span.inner-icon
+                    i.fa.fa-user-tie
+                  span.inner-text Quản lý nhân viên
+            li  
+              a(href=`${prefixAdmin}/customers`)
+                  span.inner-icon
+                    i.fa.fa-id-card
+                  span.inner-text Quản lý khách hàng
+            li  
+              a(href=`${prefixAdmin}/statistics`)
+                  span.inner-icon
+                    i.fa.fa-chart-line
+                  span.inner-text Quản lý doanh thu
+            li  
+              a(href=`${prefixAdmin}/roles`) 
+                span.inner-text Nhóm quyền
+            li  
+              a(href=`${prefixAdmin}/permissions`) 
+                span.inner-text Phân quyền
+            li  
+              a(href=`${prefixAdmin}/settings/general`) 
+                san.inner-icon 
+                  i.fa-solid.fa-gear
+                span.inner-text Cài đặt chung
+      li
+        a(href='#') TÀI KHOẢN
+        ul
+          li.my-account
+            a(href=`${prefixAdmin}/my-account`)
+              span.inner-icon
+                i.fa-regular.fa-user
+            a(href=`${prefixAdmin}/chats`)
+              span.inner-icon
+                i.fa-regular.fa-comment
+            a(href=`${prefixAdmin}/auth/logout`)
+              span.inner-icon
+                i.fa-solid.fa-right-from-bracket

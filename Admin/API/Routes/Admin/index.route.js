@@ -10,6 +10,8 @@ const customerRouters = require("./customer.router");
 const accountRouters = require("./account.router");
 const statisticRouters = require("./statistic.router");
 const settingRouters=require("./setting.router");
+const myAccountRouters=require("./my-account.router");
+const orderRouters=require("./order.router");
 
 module.exports = (app) => {
 
@@ -30,4 +32,8 @@ module.exports = (app) => {
     app.use(PATH_ADMIN + `/statistics`, authMiddleware.requireAuth, statisticRouters);
 
     app.use(PATH_ADMIN + `/settings`, authMiddleware.requireAuth, settingRouters);
+
+    app.use(PATH_ADMIN + `/my-account`, authMiddleware.requireAuth, myAccountRouters);
+
+    app.use(PATH_ADMIN + `/orders`, authMiddleware.requireAuth, orderRouters);
 }

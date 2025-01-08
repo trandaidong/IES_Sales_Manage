@@ -63,15 +63,16 @@ module.exports.index = async (req, res) => {
         if (req.query.keyword) {
             keyword = req.query.keyword;
         }
-        res.render('admin/pages/categories/index.pug', {
-            pageTitle: "Danh mục",
-            keyword: keyword,
-            sortKey: sortKey,
-            sortValue: sortValue,
-            filterStatus: filterStatus,
-            pagination: objectPagination,
-            categories: categories
-        });
+        res.json(categories);
+        // res.render('admin/pages/categories/index.pug', {
+        //     pageTitle: "Danh mục",
+        //     keyword: keyword,
+        //     sortKey: sortKey,
+        //     sortValue: sortValue,
+        //     filterStatus: filterStatus,
+        //     pagination: objectPagination,
+        //     categories: categories
+        // });
     } catch (error) {
         console.error('Lỗi truy vấn:', error);
         res.status(500).send("Lỗi lấy dữ liệu từ cơ sở dữ liệu.");

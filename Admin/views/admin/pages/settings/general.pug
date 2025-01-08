@@ -2,72 +2,73 @@ extends ../../layouts/default.pug
 include ../../mixins/alert.pug
 
 block main 
-    h1(class="mb-4 text-center") Cài đặt chung
-
     +alert-error(3000)
     +alert-success(3000)
-    form(
-        action=`${prefixAdmin}/settings/general?_method=PATCH`
-        method="POST"
-    )
-        div(class="form-group")
-            lable(for="websiteName") Tên website
-            input(
-                type="text"
-                class="form-control"
-                id="websiteName"
-                name="websiteName"
-                value=(settingGeneral? settingGeneral.WEBNAME: "")
-            )
-        div(class="form-group")
-            lable(for="logo") Logo
-            input(
-                type="text"
-                class="form-control"
-                id="logo"
-                name="logo"
-                value=(settingGeneral? settingGeneral.LOGO: "")
-            )
-        div(class="form-group")
-            lable(for="phone") Số điện thoại
-            input(
-                type="text"
-                class="form-control"
-                id="phone"
-                name="phone"
-                value=(settingGeneral? settingGeneral.PHONE: "")
-            )
-        div(class="form-group")
-            lable(for="email") Email
-            input(
-                type="email"
-                class="form-control"
-                id="email"
-                name="email"
-                value=(settingGeneral? settingGeneral.EMAIL: "")
-            )
-        div(class="form-group")
-            lable(for="address") Địa chỉ
-            input(
-                type="text"
-                class="form-control"
-                id="address"
-                name="address"
-                value=(settingGeneral? settingGeneral.ADDRESS: "")
-            )
-        div(class="form-group")
-            lable(for="copyright") Copyright
-            input(
-                type="text"
-                class="form-control"
-                id="copyright"
-                name="copyright"
-                value=(settingGeneral? settingGeneral.COPYRIGHT: "")
-            )
-        div(class="form-group")
-            button(
-                type="submit"
-                class="btn btn-primary"
-            ) Cập nhật
-        
+    .card-header.text-center
+        h3 CÀI ĐẶT CHUNG
+    .card-body
+        form(
+            action=`${prefixAdmin}/settings/general?_method=PATCH`
+            method="POST"
+        )
+            div(class="form-group")
+                lable(for="websiteName") Tên website
+                input(
+                    type="text"
+                    class="form-control"
+                    id="websiteName"
+                    name="websiteName"
+                    value=(settingGeneral? settingGeneral.WEBNAME: "")
+                )
+            div(class="form-group")
+                lable(for="logo") Logo
+                input(
+                    type="text"
+                    class="form-control"
+                    id="logo"
+                    name="logo"
+                    value=(settingGeneral? settingGeneral.LOGO: "")
+                )
+            div(class="form-group")
+                lable(for="phone") Số điện thoại
+                input(
+                    type="text"
+                    class="form-control"
+                    id="phone"
+                    name="phone"
+                    value=(settingGeneral? settingGeneral.PHONE: "")
+                )
+            div(class="form-group")
+                lable(for="email") Email
+                input(
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    value=(settingGeneral? settingGeneral.EMAIL: "")
+                )
+            div(class="form-group")
+                lable(for="address") Địa chỉ
+                input(
+                    type="text"
+                    class="form-control"
+                    id="address"
+                    name="address"
+                    value=(settingGeneral? settingGeneral.ADDRESS: "")
+                )
+            div(class="form-group")
+                lable(for="copyright") Copyright
+                input(
+                    type="text"
+                    class="form-control"
+                    id="copyright"
+                    name="copyright"
+                    value=(settingGeneral? settingGeneral.COPYRIGHT: "")
+                )
+            div(class="form-group")
+                button(
+                    type="submit"
+                    class="btn btn-primary"
+                ) Cập nhật
+            
 

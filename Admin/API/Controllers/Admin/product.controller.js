@@ -70,6 +70,7 @@ module.exports.index = async (req, res) => {
         if (req.query.keyword) {
             keyword = req.query.keyword;
         }
+        // res.json(products);
         res.render('admin/pages/products/index.pug', {
             pageTitle: "Sản phẩm",
             keyword: keyword,

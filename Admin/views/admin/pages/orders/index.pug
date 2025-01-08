@@ -1,0 +1,135 @@
+extends ../../layouts/default.pug
+include ../../mixins/filterStatus.pug
+include ../../mixins/search.pug
+include ../../mixins/pagination.pug
+include ../../mixins/form-change-multi.pug
+include ../../mixins/alert.pug
+include ../../mixins/sort.pug
+include ../../mixins/moment.pug
+
+block main 
+        //- if(role.permissions.includes("products_view"))
+        +alert-success("3000")
+        +alert-error("3000")
+
+        .card.mb-3
+            .card-header.text-center Bộ lọc và tìm kiếm
+            .card-body 
+                .row   
+                    .col-4
+                        +filter-status(filterStatus)
+
+                    .col-4 
+                        +sort(sortKey,sortValue, false, false, false)
+
+                    .col-4 
+                        form(id="form-search")
+                            .input-group
+                                +search(keyword)
+        .card.mb-3
+            .card-header
+                .card-body 
+                    table(class="table table-table-hover table-sm"
+                        checkbox-multi
+                        ) 
+                        thead 
+                            tr  
+                                th.text-center STT 
+                                th.text-center Mã hóa đơn
+                                th.text-center Khách hàng
+                                th.text-center Tổng tiền
+                                th.text-center Thanh toán
+                                th.text-center Trạng thái
+                                th.text-center Chi tiết
+                        tbody 
+                            each item, index in orders
+                                tr 
+                                    //- td #{pagination.limitItems *(pagination.currentPage-1)+index+1}
+                                    td.text-center #{index+1}
+                                    td.text-center #{item.ORDERID}
+                                    td.text-center #{item.FULLNAME}
+                                    td.text-center #{item.TOTALAMOUNT}
+                                    td.text-center #{item.PAID==1?"Rồi":"Chưa"} (#{item.PAYMETHOD})
+                                    td.text-center 
+                                            //- if(role.permissions.includes("products_update"))
+                                            //- if(item.STATUS=="Active")
+                                            //-     a(
+                                            //-         href="javascript:;" 
+                                            //-         class="badge badge-success"
+                                            //-         data-id= item.PRODUCTID 
+                                            //-         data-status=item.STATUS
+                                            //-         button-change-status
+                                            //-     ) Hoạt động
+                                            //- else
+                                            //-     // javascript:; ở đây có nghĩa là hoạt động ở đây được làm bởi javascript
+                                            //-     // hiểu như là nó để cho xử lí ở js chứ không tự động link qua router khác
+                                            //-     // nêu skhong thì có thể thay thành thẻ button cũng được
+                                            //-     a(
+                                            //-         href="javascript:;" 
+                                            //-         class="badge badge-danger"
+                                            //-         data-status=item.STATUS 
+                                            //-         data-id=item.PRODUCTID 
+                                            //-         button-change-status
+                                            //-     ) Dừng hoạt động
+                                            //- else 
+                                            if(item.STATUS=="Pending")
+                                                span(
+                                                    class="badge badge-secondary"
+                                                    data-status=item.STATUS 
+                                                    data-id=item.PRODUCTID 
+                                                    button-change-status
+                                                ) Chờ xử lý
+                                            else if(item.STATUS=="Delivered")
+                                                span(
+                                                    class="badge badge-success"
+                                                    data-id= item.PRODUCTID 
+                                                    data-status=item.STATUS
+                                                    button-change-status
+                                                ) Nhận hàng
+                                            else if(item.STATUS=="Canceled")
+                                                span(
+                                                    class="badge badge-danger"
+                                                    data-status=item.STATUS 
+                                                    data-id=item.PRODUCTID 
+                                                    button-change-status
+                                                ) Đã hủy
+                                            else
+                                                span(
+                                                    class="badge badge-warning"
+                                                    data-status=item.STATUS 
+                                                    data-id=item.PRODUCTID 
+                                                    button-change-status
+                                                ) Đang xử lý
+
+                                    td.text-center
+                                        a(
+                                            href=`${prefixAdmin}/orders/detail/${item.ORDERID}`
+                                            class="btn btn-secondary btn-sm"
+                                        ) 
+                                            i.fa-solid.fa-circle-info.
+
+                                    //-     //if(role.permissions.includes("products_update"))
+                                    //-     a(
+                                    //-         href=`${prefixAdmin}/customers/update/${item.USERID}`
+                                    //-         class="btn btn-warning btn-sm") Sửa
+                                    
+                                    //-     //if(role.permissions.includes("products_delete"))
+                                    //-     button(class="btn btn-danger btn-sm ml-l"
+                                    //-         button-delete-item
+                                    //-         button-id=item.USERID
+                                    //-     ) Xóa
+
+        +box-pagination(pagination)
+        form(
+            action=""
+            method='POST'
+            id="form-change-status"
+            data-path=`${prefixAdmin}/customers/change-status`
+        )
+        form(
+            action=""
+            method='POST'
+            id="form-delete-item"
+            data-path=`${prefixAdmin}/customers/delete`
+        )
+        script(src="/admin/js/product.js")

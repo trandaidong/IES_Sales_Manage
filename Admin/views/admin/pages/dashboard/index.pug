@@ -9,20 +9,22 @@ block main
         .col-12 
             .card.mb-4 
                 .card-header Thông tin tài khoản
-                .card-body
-                    //- if(user.avatar)
-                    //-     img(
-                    //-         src=user.avatar
-                    //-         style="height: 100px;margin-bottom: 15px;"
-                    //-     )
-                    //- if(user.fullname)
-                    //-     p Họ tên: <b>#{user.fullname}</b>
-                    //- if(user.email)
-                    //-     p Email: <b>#{user.email}</b>
-                    //- if(user.phone)
-                    //-     p Số điện thoại: <b>#{user.phone}</b>
-                    //- if(user.title)
-                    //-     p Phân quyền: <b>#{role.title}</b>
+                .card-body.row
+                    .col-4.text-center
+                        if(user.AVATAR)
+                            img(
+                                src=user.AVATAR
+                                style="height: 100px;margin-bottom: 15px;"
+                            )
+                    .col-8
+                        if(user.FULLNAME)
+                            p Họ tên: <b>#{user.FULLNAME}</b>
+                        if(user.EMAIL)
+                            p Email: <b>#{user.EMAIL}</b>
+                        if(user.PHONE)
+                            p Số điện thoại: <b>#{user.PHONE}</b>
+                        //- if(user.title)
+                        //-     p Phân quyền: <b>#{role.title}</b>
                         
         .col-6
             .card.mb-4
@@ -45,13 +47,13 @@ block main
                 .card-header Tài khoản admin
                 .card-body
                     p Số lượng: <b>#{statistic.account.total}</b>
-                    p Hoạt động: <b>#{statistic.account.total}</b>
-                    p Dừng hoạt động: <b>#{statistic.account.total}</b>
+                    p Hoạt động: <b>#{statistic.account.active}</b>
+                    p Dừng hoạt động: <b>#{statistic.account.inactive}</b>
         
         .col-6
             .card.mb-4
                 .card-header Tài khoản client
                 .card-body
                     p Số lượng: <b>#{statistic.user.total}</b>
-                    p Hoạt động: <b>#{statistic.user.total}</b>
-                    p Dừng hoạt động: <b>#{statistic.user.total}</b>
+                    p Hoạt động: <b>#{statistic.user.active}</b>
+                    p Dừng hoạt động: <b>#{statistic.user.inactive}</b>

@@ -20,7 +20,7 @@ body {
 
 /* Sidebar */
 .sidebar {
-    width: 270px;
+    width: 250px;
     padding: 20px;
     background: #2d5167;
     color: #ffffff;
@@ -29,10 +29,9 @@ body {
     align-items: center;
     position: relative; /* Make sidebar the reference for submenu */
     z-index: 2; /* Ensure sidebar is above other elements */
-    overflow-y: auto; /* Add scrolling when necessary */
 
-    max-height: 100vh; /* Optional: limit sidebar height to viewport */
-    position: sticky; /* Giữ cố định */
+    height: 100%;
+    position: fixed; /* Giữ cố định */
     top: 0; /* Vị trí cố định ở đầu */  
 }
 
@@ -77,8 +76,11 @@ body {
     align-items: center; /* Căn giữa nội dung (biểu tượng) theo chiều dọc */
     margin-right: 5px; /* Khoảng cách giữa biểu tượng và văn bản */
 }
-.sidebar nav ul.menu-left li a .inner-icon {
-    font-size: 1.1rem;
+.sidebar nav .inner-icon {
+    font-size: 16px;
+}
+.sidebar nav .inner-text {
+    font-size: 15px;
 }
 .sidebar nav ul.menu-left > li > a {
     font-weight: bold;
@@ -102,4 +104,8 @@ body {
 .sidebar nav ul.menu-left .sub-menu a{
     padding-left: 40px;
 
+}
+
+.sidebar .my-account{
+    display: flex;
 }
