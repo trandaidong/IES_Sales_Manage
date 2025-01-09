@@ -18,29 +18,28 @@ module.exports.update = async (req, res) => {
 }   
 //[PATCH] /admin/my-account/update
 module.exports.updatePatch = async (req, res) => {
-    const emailExists = await Account.findOne({
-        _id: { $ne: res.locals.user.id },
-        email: req.body.email,
-        deleted: false
-    });
-    if (emailExists) { // nếu email đã tồn tại 
-        req.flash("error", `Email ${req.body.email} exists!`);
-        res.redirect("back");
-    }
-    else {
-        if (req.body.password) {
-            req.body.password = md5(req.body.password);
-        }
-        else {
-            delete req.body.password
-        }
-        try {
-            await Account.updateOne({ _id: res.locals.user.id }, req.body);
-            req.flash("success", `Update successfully!`);
-        }
-        catch {
-            req.flash("error", `Update faild!`);
-        }
-        res.redirect("back");
+    console.log(req.body);
+    var { fullname , email,password, phone, avatar} = req.body;
+    const id= res.locals.user.ADMINID;
+    try {
+        await sequelize.query(`
+            UPDATE TADMIN
+            SET 
+                FULLNAME = :fullname,
+                EMAIL = :email,
+                PASSWORD = :password,
+                PHONE = :phone,
+                AVATAR = :avatar
+            WHERE ADMINID = :id
+        `, {
+            replacements: { fullname, email, password, phone, avatar, id },
+            type: Sequelize.QueryTypes.UPDATE
+        });
+        req.flash("success", "Updated successfully!");
+        res.redirect(`back`);
+    } catch (error) {
+        req.flash("error", "Update failed!");
+        console.error('Lỗi truy vấn:', error);
+        res.redirect(`back`);
     }
 }   

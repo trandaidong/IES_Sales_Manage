@@ -21,9 +21,9 @@ const ProductsPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/products"); // Gọi API
+        const response = await fetch("http://localhost:3000/admin/products"); // Gọi API
         const data = await response.json();
-
+        console.log(data)
         // Cập nhật dữ liệu slider và banner từ products
         setProducts(data.products || []); // Toàn bộ sản phẩm
       } catch (error) {

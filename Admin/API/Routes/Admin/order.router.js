@@ -6,6 +6,10 @@ router.get('/', controller.index);
 
 router.get('/detail/:id', controller.detail)
 
+router.post('/confirm/:id', controller.confirm);
+
+router.post('/cancel/:id', controller.cancel);
+
 // router.get('/create', controller.create);
 
 // router.post('/create', controller.createPost);

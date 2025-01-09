@@ -1,27 +1,28 @@
 extends ../../layouts/default.pug
 
 block main 
+    if(role.PERMISSION.includes("categories_view"))
+        if(category.TITLE)
+            h1(class="mb-4") #{category.TITLE}
 
-    if(category.TITLE)
-        h1(class="mb-4") #{category.TITLE}
+        if(category.THUMBNAIL)
+            div(class="mb-4")
+                img(
+                    src=category.THUMBNAIL 
+                    style="width: 100px"
+                )
 
-    if(category.THUMBNAIL)
-        div(class="mb-4")
-            img(
-                src=category.THUMBNAIL 
-                style="width: 100px"
-            )
+        if(category.STATUS)
+            div(class="mb-4")
+                span Trạng thái: 
+                if(category.STATUS=="Active")
+                    span(class="badge badge-success") Hoạt động
+                else 
+                    span(class="badge badge-danger") Dừng hoạt động
 
-    if(category.STATUS)
-        div(class="mb-4")
-            span Trạng thái: 
-            if(category.STATUS=="Active")
-                span(class="badge badge-success") Hoạt động
-            else 
-                span(class="badge badge-danger") Dừng hoạt động
-
-    if(category.DESCRIPTION)
-        div(class="mb-4") !{category.DESCRIPTION}
-    a(
-        href=`${prefixAdmin}/categories/update/${category.SLUG}`
-        class="btn btn-warning btn-sm") Chỉnh sửa
+        if(category.DESCRIPTION)
+            div(class="mb-4") !{category.DESCRIPTION}
+        if(role.PERMISSION.includes("categories_update"))
+            a(
+                href=`${prefixAdmin}/categories/update/${category.SLUG}`
+                class="btn btn-warning btn-sm") Chỉnh sửa

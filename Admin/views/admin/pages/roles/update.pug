@@ -2,39 +2,37 @@ extends ../../layouts/default.pug
 include ../../mixins/alert.pug
 
 block main 
-    if(role.permissions.includes("roles_update"))
-        h1(class="mb-4") Chỉnh sửa nhóm quyền
-
+    if(role.PERMISSION.includes("roles_update"))
         +alert-success(3000)
         +alert-error(3000)
-
-        form(
-            action=`${prefixAdmin}/roles/update/${records.id}?_method=PATCH`
-            method="POST"
-        )
-            div(class="form-group")
-                lable(for="title") Tiêu đề
-                input(
-                    type="text"
-                    class="form-control"
-                    id="title"
-                    name="title"
-                    value = records.title
+        .card.mb-3
+            .card-header.text-center Chỉnh sửa nhóm quyền
+            .card-body 
+                form(
+                    action=`${prefixAdmin}/roles/update/${records.ROLEID}?_method=PATCH`
+                    method="POST"
                 )
+                    div(class="form-group")
+                        lable(for="title") Tiêu đề
+                        input(
+                            type="text"
+                            class="form-control"
+                            id="title"
+                            name="title"
+                            value = records.TITLE
+                        )
 
-            div(class="form-group")
-                lable(for="desc") Mô tả
-                input(
-                    type="text"
-                    class="form-control"
-                    id="desc"
-                    name="description"
-                    value = records.description
-                )
+                    div(class="form-group")
+                        lable(for="desc") Mô tả
+                        input(
+                            type="text"
+                            class="form-control"
+                            id="desc"
+                            name="description"
+                            value = records.DESCRIPTION
+                        )
 
-            div(class="form-group")
-                button(
-                    type="submit"
-                    class="btn btn-primary"
-                ) Cập nhật
-        script(src=`${prefixAdmin}/js/script.js`)
+                    button(
+                        type="submit"
+                        class="btn btn-primary"
+                    ) Cập nhật

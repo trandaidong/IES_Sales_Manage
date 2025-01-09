@@ -8,7 +8,7 @@ include ../../mixins/sort.pug
 include ../../mixins/moment.pug
 
 block main 
-        //- if(role.permissions.includes("products_view"))
+    if(role.PERMISSION.includes("orders_view"))
         +alert-success("3000")
         +alert-error("3000")
 
@@ -20,7 +20,7 @@ block main
                         +filter-status(filterStatus)
 
                     .col-4 
-                        +sort(sortKey,sortValue, false, false, false)
+                        //- +sort(sortKey,sortValue, false, false, false)
 
                     .col-4 
                         form(id="form-search")
@@ -107,17 +107,6 @@ block main
                                             class="btn btn-secondary btn-sm"
                                         ) 
                                             i.fa-solid.fa-circle-info.
-
-                                    //-     //if(role.permissions.includes("products_update"))
-                                    //-     a(
-                                    //-         href=`${prefixAdmin}/customers/update/${item.USERID}`
-                                    //-         class="btn btn-warning btn-sm") Sửa
-                                    
-                                    //-     //if(role.permissions.includes("products_delete"))
-                                    //-     button(class="btn btn-danger btn-sm ml-l"
-                                    //-         button-delete-item
-                                    //-         button-id=item.USERID
-                                    //-     ) Xóa
 
         +box-pagination(pagination)
         form(

@@ -10,47 +10,60 @@ aside.sidebar
               span.inner-icon
                 i.fa-solid.fa-table-columns
               span.inner-text Tổng quan
-          li
-            a(href=`${prefixAdmin}/categories`)
-              span.inner-icon
-                i.fa.fa-users
-              span.inner-text Quản lý danh mục
-            li  
-              a(href=`${prefixAdmin}/products`)
-                span.inner-icon
-                  i.fa-brands.fa-product-hunt
-                span.inner-text Quản lý sản phẩm
-            li  
-              a(href=`${prefixAdmin}/orders`) 
-                span.inner-icon
-                  i.fa.fa-file-invoice-dollar
-                span.inner-text Quản lý đơn hàng    
-            li  
-              a(href=`${prefixAdmin}/accounts`)
+            if(role.PERMISSION.includes("categories_view"))
+              li
+                a(href=`${prefixAdmin}/categories`)
                   span.inner-icon
-                    i.fa.fa-user-tie
-                  span.inner-text Quản lý nhân viên
-            li  
-              a(href=`${prefixAdmin}/customers`)
+                    i.fa.fa-users
+                  span.inner-text Quản lý danh mục
+            if(role.PERMISSION.includes("products_view"))
+              li  
+                a(href=`${prefixAdmin}/products`)
                   span.inner-icon
-                    i.fa.fa-id-card
-                  span.inner-text Quản lý khách hàng
-            li  
-              a(href=`${prefixAdmin}/statistics`)
+                    i.fa-brands.fa-product-hunt
+                  span.inner-text Quản lý sản phẩm
+            if(role.PERMISSION.includes("orders_view"))
+              li  
+                a(href=`${prefixAdmin}/orders`) 
                   span.inner-icon
-                    i.fa.fa-chart-line
-                  span.inner-text Quản lý doanh thu
-            li  
-              a(href=`${prefixAdmin}/roles`) 
-                span.inner-text Nhóm quyền
-            li  
-              a(href=`${prefixAdmin}/permissions`) 
-                span.inner-text Phân quyền
-            li  
-              a(href=`${prefixAdmin}/settings/general`) 
-                san.inner-icon 
-                  i.fa-solid.fa-gear
-                span.inner-text Cài đặt chung
+                    i.fa.fa-file-invoice-dollar
+                  span.inner-text Quản lý đơn hàng 
+            if(role.PERMISSION.includes("accounts_view"))   
+              li  
+                a(href=`${prefixAdmin}/accounts`)
+                    span.inner-icon
+                      i.fa.fa-user-tie
+                    span.inner-text Quản lý nhân viên
+            if(role.PERMISSION.includes("customers_view"))
+              li  
+                a(href=`${prefixAdmin}/customers`)
+                    span.inner-icon
+                      i.fa.fa-id-card
+                    span.inner-text Quản lý khách hàng
+            if(role.PERMISSION.includes("statistics_view"))
+              li  
+                a(href=`${prefixAdmin}/statistics`)
+                    span.inner-icon
+                      i.fa.fa-chart-line
+                    span.inner-text Quản lý doanh thu
+            if(role.PERMISSION.includes("roles_view"))      
+              li  
+                a(href=`${prefixAdmin}/roles`)
+                  span.inner-icon   
+                    i.fa-brands.fa-critical-role 
+                  span.inner-text Nhóm quyền
+            if(role.PERMISSION.includes("roles_permission"))
+              li  
+                a(href=`${prefixAdmin}/roles/permission`) 
+                  span.inner-icon 
+                    i.fa-brands.fa-resolving
+                  span.inner-text Phân quyền
+            if(role.PERMISSION.includes("settings_view"))
+              li  
+                a(href=`${prefixAdmin}/settings/general`) 
+                  san.inner-icon 
+                    i.fa-solid.fa-gear
+                  span.inner-text Cài đặt chung
       li
         a(href='#') TÀI KHOẢN
         ul

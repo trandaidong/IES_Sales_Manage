@@ -14,7 +14,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
 require('dotenv').config();
-
+// cors
 
 sequelize;// kết nối databasse
 

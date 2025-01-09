@@ -8,7 +8,7 @@ include ../../mixins/sort.pug
 include ../../mixins/moment.pug
 
 block main 
-        //- if(role.permissions.includes("products_view"))
+    if(role.PERMISSION.includes("accounts_view"))
         +alert-success("3000")
         +alert-error("3000")
 
@@ -31,10 +31,10 @@ block main
                 .card-body 
                     .row 
                         .col-10
-                                //- if(role.permissions.includes("products_update"))
+                            if(role.PERMISSION.includes("account_update"))
                                 +box-form-change-multi(`${prefixAdmin}/accounts/change-multi?_method=PATCH`)
                         .col-2
-                                //- if(role.permissions.includes("products_create"))
+                            if(role.PERMISSION.includes("accounts_create"))
                                 a(
                                     href=`${prefixAdmin}/accounts/create`
                                     class="btn btn-outline-success"
@@ -64,13 +64,13 @@ block main
                                     td #{index+1}
                                     td
                                         img(
-                                            src="/admin/images/avatar.png"
+                                            src= item.AVATAR ? item.AVATAR : "/admin/images/avatar.png"
                                             alt="",
                                             width="50px"
                                             height="auto"
                                         )
                                     td #{item.FULLNAME}
-                                    td Quản trị viên
+                                    td #{item.ROLE}
                                     td #{item.EMAIL}
                                     td 
                                             //- if(role.permissions.includes("products_update"))
@@ -114,16 +114,16 @@ block main
                                             class="btn btn-secondary btn-sm"
                                         ) Chi tiết
 
-                                        //if(role.permissions.includes("products_update"))
-                                        a(
-                                            href=`${prefixAdmin}/accounts/update/${item.ADMINID}`
-                                            class="btn btn-warning btn-sm") Sửa
+                                        if(role.PERMISSION.includes("accounts_update"))
+                                            a(
+                                                href=`${prefixAdmin}/accounts/update/${item.ADMINID}`
+                                                class="btn btn-warning btn-sm") Sửa
                                     
-                                        //if(role.permissions.includes("products_delete"))
-                                        button(class="btn btn-danger btn-sm ml-l"
-                                            button-delete-item
-                                            button-id=item.ADMINID 
-                                        ) Xóa
+                                        if(role.PERMISSION.includes("accounts_delete"))
+                                            button(class="btn btn-danger btn-sm ml-l"
+                                                button-delete-item
+                                                button-id=item.ADMINID 
+                                            ) Xóa
 
         +box-pagination(pagination)
         form(

@@ -11,6 +11,7 @@ import ProductDetailPage from "./pages/users/productDetailPage";
 import ShoppingCartPage from "pages/users/shoppingCartPage";
 import CheckoutPage from "pages/users/checkoutPage";
 import SearchPage from "pages/users/searchPage";
+import CategoryDetailPage from "pages/users/categoryDetailPage";
 // Path: shop_ban_hang/src/router.js
 // tao ra 1 function renderUserRouter de tao ra 1 mang userRouter chua cac object co key la path va Component
 // tạo ra đường dẫn
@@ -43,6 +44,10 @@ const renderUserRouter = () => {
     {
       path: ROUTERS.USER.SEARCH,
       component: <SearchPage />,
+    },
+    {
+      path: ROUTERS.USER.CATEGORIES,
+      component: <CategoryDetailPage />,
     },
   ];
 

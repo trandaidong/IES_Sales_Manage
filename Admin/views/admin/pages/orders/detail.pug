@@ -8,7 +8,7 @@ include ../../mixins/sort.pug
 include ../../mixins/moment.pug
 
 block main 
-        //- if(role.permissions.includes("products_view"))
+    if(role.PERMISSION.includes("orders_view"))
         +alert-success("3000")
         +alert-error("3000")
 
@@ -23,20 +23,24 @@ block main
                         if(order.ADDRESS)
                             p <b>Địa chỉ: </b>#{order.ADDRESS}
                     .col-2
-                            //- if(role.permissions.includes("products_create"))
+                        if(role.PERMISSION.includes("orders_update"))
                             if(order.STATUS=="Pending")
-                                a(
-                                    href=`${prefixAdmin}/orders/confirm`
-                                    class="btn btn-outline-success"
-                                ) 
-                                    i.fa-solid.fa-play
-                                    sapn  Xác nhận đơn hàng
-                                a(
-                                    href=`${prefixAdmin}/orders/canceled`
-                                    class="btn btn-outline-danger"
-                                ) 
-                                    i.fa-solid.fa-xmark
-                                    sapn  Hủy đơn hàng
+                                form(
+                                    action=`${prefixAdmin}/orders/confirm/${order.ORDERID}`
+                                    method="POST"
+                                    class="d-inline"
+                                )
+                                    button(type="submit" class="btn btn-outline-success")
+                                        i.fa-solid.fa-play
+                                        span  Xác nhận đơn hàng
+                                form(
+                                    action=`${prefixAdmin}/orders/cancel/${order.ORDERID}`
+                                    method="POST"
+                                    class="d-inline"
+                                )
+                                    button(type="submit" class="btn btn-outline-danger")
+                                        i.fa-solid.fa-xmark
+                                        span  Hủy đơn hàng
             .card-body 
                 table(class="table table-table-hover table-sm"
                     checkbox-multi
@@ -57,9 +61,9 @@ block main
                                 td.text-center #{index+1}
                                 td.text-center
                                     img(
-                                        src="/admin/images/avatar.png"
+                                        src=item.THUMBNAIL
                                         alt="",
-                                        width="50px"
+                                        width="80px"
                                         height="auto"
                                     )
                                 td.text-center #{item.TITLE}
@@ -71,4 +75,4 @@ block main
                         tr
                         td(class="text-right" colspan="6") Tổng tiền:
                         td.text-center #{detailOrder.reduce((acc, item) => acc + (item.PRICE * (1 - item.DISCOUNT) * item.QUANTITY), 0).toFixed(0)}đ
-        script(src="/admin/js/product.js")
+        script(src="/admin/js/script.js")

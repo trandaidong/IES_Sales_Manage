@@ -9,9 +9,5 @@ router.get('/', controller.index);
 
 router.get('/update', controller.update);
 
-// router.patch('/update', 
-//     upload.single('avatar'), 
-//     uploadClound.upload,
-//     controller.updatePatch);
-
+router.patch('/update', controller.updatePatch);
 module.exports = router;

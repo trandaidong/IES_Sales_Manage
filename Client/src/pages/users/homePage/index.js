@@ -7,6 +7,7 @@ import { ProductCard } from "component";
 
 const HomePage = () => {
   const [products, setProducts] = useState([]); // Dữ liệu sản phẩm
+  const [categories, setCategories] = useState([]);
   const [sliderItems, setSliderItems] = useState([]); // Dữ liệu slider
   const [banners, setBanners] = useState([]); // Dữ liệu banner
 
@@ -20,29 +21,34 @@ const HomePage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/products"); // Gọi API
+        const response = await fetch("http://localhost:5000/products"); // Gọi API sản phẩm
         const data = await response.json();
-
-        // Cập nhật dữ liệu slider và banner từ products
-        setProducts(data.products || []); // Toàn bộ sản phẩm
-        setSliderItems(data.products.slice(0, 5)); // 5 sản phẩm đầu tiên cho slider
-        setBanners(data.products.slice(0, 3)); // 3 sản phẩm đầu tiên cho banner
+  
+        const response1 = await fetch("http://localhost:5000/categories"); // Gọi API danh mục
+        const categoriesData = await response1.json();
+  
+        setProducts(data || []); // Toàn bộ sản phẩm
+        setSliderItems(Array.isArray(data) ? data.slice(0, 5) : []); // 5 sản phẩm đầu tiên cho slider
+        setBanners(Array.isArray(data) ? data.slice(0, 3) : []); // 3 sản phẩm đầu tiên cho banner
+        setCategories(categoriesData || []); // Toàn bộ danh mục
+  
+        console.log(data);
       } catch (error) {
         console.error("Lỗi khi gọi API products:", error);
       }
     };
-
+  
     fetchProducts(); // Gọi API khi component được render lần đầu
   }, []);
+  
 
   const renderFeaturedProducts = (data) => {
     const tabList = [];
     const tabPanels = [];
 
     // Hiển thị theo định dạng tab (các danh mục giả định)
-    const categories = ["Tất cả", "Danh mục 1", "Danh mục 2"];
     categories.forEach((category, index) => {
-      tabList.push(<Tab key={index}>{category}</Tab>);
+      tabList.push(<Tab key={index}>{category.TITLE}</Tab>);
 
       const filteredProducts = index === 0 ? data : data.slice(0, 4); // Giả lập lọc danh mục
 
@@ -50,7 +56,7 @@ const HomePage = () => {
         <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12" key={j}>
           <ProductCard
             name={item.TITLE}
-            img={`/assets/images/${item.THUMBNAIL}`}
+            img={item.THUMBNAIL}
             price={item.PRICE}
           />
         </div>
@@ -73,18 +79,26 @@ const HomePage = () => {
 
   return (
     <>
+      {/* Featured Products */}
+      <div className="container">
+        <div className="featured">
+          <div className="section-title">
+            <h2>Sản phẩm nổi bật</h2>
+          </div>
+        </div>
+      </div>
       {/* Categories Slider */}
+
       <div className="container container_categories_slider">
         <Carousel responsive={responsive} className="categories_slider">
           {sliderItems.map((item, key) => (
             <div
               className="categories_slider_item"
               style={{
-                backgroundImage: `url(/assets/images/${item.THUMBNAIL})`,
+                backgroundImage: `url(${item.THUMBNAIL})`,
               }}
               key={key}
             >
-              <p>{item.TITLE}</p>
             </div>
           ))}
         </Carousel>
@@ -94,7 +108,7 @@ const HomePage = () => {
       <div className="container">
         <div className="featured">
           <div className="section-title">
-            <h2>Sản phẩm nổi bật</h2>
+            <h2>Sản phẩm bán chạy</h2>
           </div>
           {products.length > 0 ? (
             renderFeaturedProducts(products)
@@ -104,19 +118,19 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Banner Slider */}
+      {/* Banner Slider
       <div className="container">
         <Carousel responsive={responsive} className="banner_slider">
           {banners.map((banner, index) => (
             <div className="banner_pic" key={index}>
               <img
-                src={`/assets/images/${banner.THUMBNAIL}`}
+                src={banner.THUMBNAIL}
                 alt={`Banner ${index + 1}`}
               />
             </div>
           ))}
         </Carousel>
-      </div>
+      </div> */}
     </>
   );
 };

@@ -9,9 +9,10 @@ const categoryRouters = require("./category.router");
 const customerRouters = require("./customer.router");
 const accountRouters = require("./account.router");
 const statisticRouters = require("./statistic.router");
-const settingRouters=require("./setting.router");
-const myAccountRouters=require("./my-account.router");
-const orderRouters=require("./order.router");
+const settingRouters = require("./setting.router");
+const myAccountRouters = require("./my-account.router");
+const orderRouters = require("./order.router");
+const roleRouters = require("./roles.router");
 
 module.exports = (app) => {
 
@@ -36,4 +37,6 @@ module.exports = (app) => {
     app.use(PATH_ADMIN + `/my-account`, authMiddleware.requireAuth, myAccountRouters);
 
     app.use(PATH_ADMIN + `/orders`, authMiddleware.requireAuth, orderRouters);
+
+    app.use(PATH_ADMIN + `/roles`, authMiddleware.requireAuth, roleRouters);
 }

@@ -22,9 +22,19 @@ module.exports.requireAuth = async (req, res, next) => {
                 res.redirect(`${systemConfig.prefixAdmin}/auth/login`)
             }
             else {
-                // const role = await Role.findOne({ _id: user.role_id }).select("title permissions");
+                const id=user.ROLEID;
+
+                const [role] = await sequelize.query(
+                    `SELECT * 
+                     FROM TROLE 
+                     WHERE ROLEID = :id`,
+                    {
+                        replacements: { id }, // Đặt giá trị của biến email vào đây
+                        type: Sequelize.QueryTypes.SELECT
+                    }
+                );
                 res.locals.user = user;
-                // res.locals.role = role;
+                res.locals.role = role;
                 next();
             }
         } catch (error) {

@@ -2,61 +2,76 @@ extends ../../layouts/default.pug
 include ../../mixins/alert.pug
 
 block main 
-    //- if(role.permissions.includes("products_create"))
-    h1(class="mb-4") Thêm mới quản lý
-    +alert-error(3000)
+    if(role.PERMISSION.includes("accounts_create"))
+        +alert-error(3000)
+        .card.mb-3
+            .card-header.text-center Thêm mới nhân viên
+            .card-body 
+                form(
+                    action=`${prefixAdmin}/accounts/create`
+                    id="form-create-product"
+                    method="POST"
+                )
+                    div(class="form-group")
+                        lable(for="fullname") Họ Tên
+                        input(
+                            type="text"
+                            class="form-control"
+                            id="fullname"
+                            name="fullname"
+                            required
+                        )
+                    div(class="form-group")
+                        lable(for="roleid") Quyền
+                        select(
+                            name="roleid"
+                            id="roleid"
+                            class="form-control"
+                            required
+                        )
+                            option(value="") -- Chọn quyền --
+                            each item in roles
+                                option(value=item.ROLEID) #{item.TITLE}
+                    div(class="form-group")
+                        lable(for="email") Email
+                        input(
+                            type="email"
+                            class="form-control"
+                            id="email"
+                            name="email"
+                            required
+                        )
+                    div(class="form-group")
+                        lable(for="phone") SĐT
+                        input(
+                            type="text"
+                            class="form-control"
+                            id="phone"
+                            name="phone"
+                            required
+                        )
 
-    form(
-        action=`${prefixAdmin}/accounts/create`
-        id="form-create-product"
-        method="POST"
-    )
-        div(class="form-group")
-            lable(for="fullname") Họ Tên
-            input(
-                type="text"
-                class="form-control"
-                id="fullname"
-                name="fullname"
-                required
-            )
-        div(class="form-group")
-            lable(for="email") Email
-            input(
-                type="email"
-                class="form-control"
-                id="email"
-                name="email"
-            )
-        div(class="form-group")
-            lable(for="phone") SĐT
-            input(
-                type="text"
-                class="form-control"
-                id="phone"
-                name="phone"
-            )
+                    div(class="form-group")
+                        lable(for="thumbnail") AVATAR
+                        input(
+                            type="text"
+                            class="form-control"
+                            id="thumbnail"
+                            name="thumbnail"
+                            required
+                        )
 
-        div(class="form-group")
-            lable(for="thumbnail") AVATAR
-            input(
-                type="text"
-                class="form-control"
-                id="thumbnail"
-                name="thumbnail"
-            )
-
-        div(class="form-group")
-            lable(for="password") Password
-            input(
-                type="text"
-                class="form-control"
-                id="password"
-                name="password"
-            )
-        div(class="form-group")
-            button(
-                type="submit"
-                class="btn btn-primary"
-            ) Tạo mới
-    //- script(src=`${prefixAdmin}/js/script.js`)
+                    div(class="form-group")
+                        lable(for="password") Password
+                        input(
+                            type="text"
+                            class="form-control"
+                            id="password"
+                            name="password"
+                            required
+                        )
+                    div(class="form-group")
+                        button(
+                            type="submit"
+                            class="btn btn-primary"
+                        ) Tạo mới

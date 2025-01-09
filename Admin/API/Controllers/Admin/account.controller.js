@@ -52,11 +52,12 @@ module.exports.index = async (req, res) => {
         )
         // End pagination
         const accounts = await sequelize.query(`
-            SELECT *
-            FROM TADMIN
-            WHERE (FULLNAME LIKE :keyword OR :keyword IS NULL) AND DELETED=0
-                AND (STATUS = :status OR :status IS NULL)
-            ORDER BY ${sortKey} ${sortValue}
+            SELECT A.*, R.TITLE AS ROLE
+            FROM TADMIN A
+            JOIN TROLE R ON R.ROLEID=A.ROLEID
+            WHERE (A.FULLNAME LIKE :keyword OR :keyword IS NULL) AND A.DELETED=0
+                AND (A.STATUS = :status OR :status IS NULL)
+            ORDER BY A.${sortKey} ${sortValue}
             LIMIT :limit OFFSET :skip
         `, {
             replacements: {
@@ -110,8 +111,15 @@ module.exports.detail = async (req, res) => {
 // [GET] /admin/api/product
 module.exports.create = async (req, res) => {
     try {
+        const roles = await sequelize.query(`
+            SELECT *
+            FROM TROLE
+        `, {
+            type: Sequelize.QueryTypes.SELECT // Để trả về kiểu select và trả về một mảng
+        });
         res.render('admin/pages/accounts/create.pug', {
-            pageTitle: "Thêm mới quản lý"
+            pageTitle: "Thêm mới quản lý",
+            roles
         });
     } catch (error) {
         console.error('Lỗi truy vấn:', error);
@@ -122,13 +130,13 @@ module.exports.create = async (req, res) => {
 module.exports.createPost = async (req, res) => {
     console.log(req.body)
     const user = res.locals.user;
-    var { fullname, email, phone, thumbnail, password} = req.body;
+    var { fullname, roleid, email, phone, thumbnail, password} = req.body;
     try {
         await sequelize.query(`
-        CALL INSERT_TADMIN(?,?,?,?,?,?)
+        CALL INSERT_TADMIN(?,?,?,?,?,?,?)
         `, {
             replacements: [
-                fullname, md5(password),phone,"Active",email,thumbnail
+                fullname, md5(password),phone,"Active",email,thumbnail,roleid
             ],
             type: Sequelize.QueryTypes.RAW // Không yêu cầu kiểu SELECT
         });
@@ -154,9 +162,16 @@ module.exports.update = async (req, res) => {
             replacements: { id },
             type: Sequelize.QueryTypes.SELECT // Để trả về kiểu select và trả về một mảng
         });
+        const roles = await sequelize.query(`
+            SELECT *
+            FROM TROLE
+        `, {
+            type: Sequelize.QueryTypes.SELECT // Để trả về kiểu select và trả về một mảng
+        });
         res.render('admin/pages/accounts/update.pug', {
             pageTitle: "Cập nhật " + account.FULLNAME,
-            account: account
+            account: account,
+            roles
         });
     } catch (error) {
         console.error('Lỗi truy vấn:', error);
@@ -169,14 +184,14 @@ module.exports.updatePatch = async (req, res) => {
     const user = res.locals.user;
     const id = req.params.id;
 
-    var { fullname, email, sdt, avatar, password, status} = req.body;
+    var { fullname,roleid , email, sdt, avatar, password, status} = req.body;
     console.log(req.body)
     try {
         await sequelize.query(`
-            CALL UPDATE_TADMIN(?,?,?,?,?,?,?)
+            CALL UPDATE_TADMIN(?,?,?,?,?,?,?,?)
         `, {
             replacements: [
-                id, fullname, email, sdt, avatar, password, status
+                id, fullname, email, sdt, avatar, password, status,roleid
             ],
             type: Sequelize.QueryTypes.RAW // Không yêu cầu kiểu SELECT
         });

@@ -89,10 +89,10 @@ const Header = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/categories");
+        const response = await fetch("http://localhost:5000/categories");
         const data = await response.json();
-        console.log("Danh mục từ API:", data.categories); // Kiểm tra dữ liệu trả về
-        setCategories(data.categories || []); // Cập nhật danh mục
+        console.log("Danh mục từ API:", data); // Kiểm tra dữ liệu trả về
+        setCategories(data || []); // Cập nhật danh mục
       } catch (error) {
         console.error("Lỗi khi gọi API lấy danh mục:", error);
       }
@@ -228,7 +228,7 @@ const Header = () => {
         <div className="humberger_menu_contact">
           <ul>
             <li>
-              <MdEmail /> Ducshop@gmail.com
+              <MdEmail /> digital.nomad22@gmail.com
             </li>
             <li>Miễn phí đơn từ {formatter(200000)}</li>
           </ul>
@@ -242,9 +242,9 @@ const Header = () => {
               <ul>
                 <li>
                   <AiOutlineMail />
-                  Duk@gmail.com
+                  digital.nomad22@gmail.com
                 </li>
-                <li>mien phi ship don tu {formatter(200000)}</li>
+                <li> Tiện lợi - Nhanh chóng - Rẻ đẹp</li>
               </ul>
             </div>
             <div className="col-6 header_top_right">
@@ -341,7 +341,7 @@ const Header = () => {
               <ul className="categories_list">
                 {categories.map((category, index) => (
                   <li key={index}>
-                    <Link to={`${ROUTERS.USER.PRODUCTS}/${category.SLUG}`}>
+                    <Link to={`${ROUTERS.USER.CATEGORIES}/${category.SLUG}`}>
                       {category.TITLE}
                     </Link>
                   </li>
