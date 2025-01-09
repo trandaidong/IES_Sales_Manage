@@ -1,7 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-const products = require("./product.json").products; // Đọc dữ liệu từ file JSON
+
+// const products = require("./product.json").products; // Đọc dữ liệu từ file JSON
 const categories = require("./product.json").categories; // Lấy danh mục từ JSON
+
+const productRoutes = require("../BE/routes/productRoutes");
+
 const app = express();
 const PORT = 5000;
 
@@ -9,9 +13,7 @@ const PORT = 5000;
 app.use(cors());
 
 // API lấy danh sách tất cả sản phẩm
-app.get("/api/products", (req, res) => {
-  res.json({ products });
-});
+app.use("/api/products",productRoutes);
 
 app.get("/api/search", (req, res) => {
   const query = req.query.q;
