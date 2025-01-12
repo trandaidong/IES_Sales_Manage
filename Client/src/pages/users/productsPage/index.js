@@ -1,14 +1,14 @@
-// trang này dùng để hiển thị trang chủ của người dùng
+import "./style.scss";
 import { memo, useEffect, useState } from "react";
 import Breadcrumb from "../theme/breadcrumb";
-import "./style.scss";
 import { Link } from "react-router-dom";
-import { categories } from "../theme/header";
 import { ROUTERS } from "utils/router";
 import { ProductCard } from "component";
+
 const ProductsPage = () => {
   const [products, setProducts] = useState([]); // Dữ liệu sản phẩm
-  //tạo danh sách cho phần sắp xếp
+  const [categories, setCategories] = useState([]); // Dữ liệu danh mục
+
   const sorts = [
     "Giá thấp đến cao",
     "Giáo cao đến thấp",
@@ -21,18 +21,31 @@ const ProductsPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/products"); // Gọi API
+        const response = await fetch("http://localhost:5000/api/products");
         const data = await response.json();
-
-        // Cập nhật dữ liệu slider và banner từ products
         setProducts(data.products || []); // Toàn bộ sản phẩm
       } catch (error) {
         console.error("Lỗi khi gọi API products:", error);
       }
     };
 
-    fetchProducts(); // Gọi API khi component được render lần đầu
+    fetchProducts();
   }, []);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/categories");
+        const data = await response.json();
+        setCategories(data.categories || []); // Toàn bộ danh mục
+      } catch (error) {
+        console.error("Lỗi khi gọi API categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   return (
     <>
       <Breadcrumb name="Danh sách sản phẩm" />
@@ -73,11 +86,17 @@ const ProductsPage = () => {
               <div className="sidebar_item">
                 <h2>Thể loại khác</h2>
                 <ul>
-                  {categories.map((name, key) => (
-                    <li key={key}>
-                      <Link to={ROUTERS.USER.PRODUCTS}>{name}</Link>
-                    </li>
-                  ))}
+                  {categories && categories.length > 0 ? (
+                    categories.map((category, key) => (
+                      <li key={key}>
+                        <Link to={`${ROUTERS.USER.PRODUCTS}/${category.SLUG}`}>
+                          {category.TITLE}
+                        </Link>
+                      </li>
+                    ))
+                  ) : (
+                    <p>Không có danh mục nào.</p>
+                  )}
                 </ul>
               </div>
             </div>
@@ -86,11 +105,11 @@ const ProductsPage = () => {
             <div className="row">
               {products.map((item, key) => (
                 <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12" key={key}>
-                   <ProductCard
-            name={item.TITLE}
-            img={`/assets/images/${item.THUMBNAIL}`}
-            price={item.PRICE}
-          />
+                  <ProductCard
+                    name={item.TITLE}
+                    img={`/assets/images/${item.THUMBNAIL}`}
+                    price={item.PRICE}
+                  />
                 </div>
               ))}
             </div>
@@ -100,4 +119,5 @@ const ProductsPage = () => {
     </>
   );
 };
+
 export default memo(ProductsPage);

@@ -9,6 +9,7 @@ const HomePage = () => {
   const [products, setProducts] = useState([]); // Dữ liệu sản phẩm
   const [sliderItems, setSliderItems] = useState([]); // Dữ liệu slider
   const [banners, setBanners] = useState([]); // Dữ liệu banner
+  const [cart, setCart] = useState([]); // Giỏ hàng
 
   const responsive = {
     superLargeDesktop: { breakpoint: { max: 4000, min: 3000 }, items: 5 },
@@ -35,16 +36,40 @@ const HomePage = () => {
     fetchProducts(); // Gọi API khi component được render lần đầu
   }, []);
 
+  const handleAddToCart = (product) => {
+    const updatedCart = [...cart];
+  
+    // Kiểm tra sản phẩm đã tồn tại trong giỏ hàng hay chưa
+    const existingItemIndex = updatedCart.findIndex(
+      (item) => item.TITLE === product.TITLE
+    );
+  
+    if (existingItemIndex !== -1) {
+      // Nếu sản phẩm đã tồn tại, tăng số lượng
+      updatedCart[existingItemIndex].quantity += 1;
+    } else {
+      // Nếu chưa tồn tại, thêm sản phẩm mới và đảm bảo có 'price'
+      updatedCart.push({
+        TITLE: product.TITLE,
+        THUMBNAIL: product.THUMBNAIL,
+        price: Number(product.PRICE), // Đảm bảo giá trị là số
+        quantity: 1,
+      });
+    }
+  
+    // Cập nhật giỏ hàng
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart)); // Lưu vào localStorage
+  };
   const renderFeaturedProducts = (data) => {
     const tabList = [];
     const tabPanels = [];
 
-    // Hiển thị theo định dạng tab (các danh mục giả định)
     const categories = ["Tất cả", "Danh mục 1", "Danh mục 2"];
     categories.forEach((category, index) => {
       tabList.push(<Tab key={index}>{category}</Tab>);
 
-      const filteredProducts = index === 0 ? data : data.slice(0, 4); // Giả lập lọc danh mục
+      const filteredProducts = index === 0 ? data : data.slice(0, 4);
 
       const tabPanel = filteredProducts.map((item, j) => (
         <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12" key={j}>
@@ -52,6 +77,7 @@ const HomePage = () => {
             name={item.TITLE}
             img={`/assets/images/${item.THUMBNAIL}`}
             price={item.PRICE}
+            onAddToCart={() => handleAddToCart(item)}
           />
         </div>
       ));

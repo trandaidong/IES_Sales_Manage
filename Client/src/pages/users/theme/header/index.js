@@ -115,7 +115,7 @@ const Header = () => {
                   ...menu,
                   child: data.categories.map((cat) => ({
                     name: cat.TITLE,
-                    path: `/category/${cat.CATEGORYID}`,
+                    path: `/categories/${cat.CATEGORYID}`,
                   })),
                 }
               : menu
@@ -199,12 +199,12 @@ const Header = () => {
                     }`}
                   >
                     {categories.map((category, index) => (
-                  <li key={index}>
-                    <Link to={`${ROUTERS.USER.PRODUCTS}/${category.SLUG}`}>
-                      {category.TITLE}
-                    </Link>
-                  </li>
-                ))}
+  <li key={index}>
+    <Link to={`${ROUTERS.USER.CATEGORY.replace(":categoryId", category.CATEGORYID)}`}>
+      {category.TITLE}
+    </Link>
+  </li>
+))}
                   </ul>
                 )}
               </li>
@@ -335,21 +335,17 @@ const Header = () => {
             >
               <AiOutlineMenu />
               Danh sách sản phẩm
-            </div>
-            {/* Hiển thị danh mục khi có dữ liệu và trạng thái bật */}
+              </div>
             {isShowCategories && categories.length > 0 && (
               <ul className="categories_list">
-                {categories.map((category, index) => (
-                  <li key={index}>
-                    <Link to={`${ROUTERS.USER.PRODUCTS}/${category.SLUG}`}>
-                      {category.TITLE}
-                    </Link>
-                  </li>
-                ))}
+             {categories.map((category, index) => (
+  <li key={index}>
+    <Link to={`${ROUTERS.USER.CATEGORY.replace(":categoryId", category.CATEGORYID)}`}>
+      {category.TITLE}
+    </Link>
+  </li>
+))}
               </ul>
-            )}
-            {isShowCategories && categories.length === 0 && (
-              <p>Không có danh mục nào.</p>
             )}
           </div>
           <div className="col-lg-9 col-md-12 col-sm-12 col-xs-12 hero_search_container">

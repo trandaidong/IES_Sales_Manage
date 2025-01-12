@@ -5,7 +5,7 @@ import { generatePath, Link } from "react-router-dom";
 import { formatter } from "utils/formater";
 import { ROUTERS } from "utils/router";
 
-const ProductCard = ({ img, name, price }) => {
+const ProductCard = ({ img, name, price, onAddToCart }) => {
   return (
     <div className="featured_item pl-pr-10">
       <div
@@ -18,7 +18,7 @@ const ProductCard = ({ img, name, price }) => {
           <li>
             <AiOutlineEye />
           </li>
-          <li>
+          <li onClick={onAddToCart} style={{ cursor: "pointer" }}>
             <AiOutlineShoppingCart />
           </li>
         </ul>
