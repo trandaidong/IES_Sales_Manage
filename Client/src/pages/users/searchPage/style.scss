@@ -1,0 +1,53 @@
+/* styles.css */
+
+/* Container chính */
+.container.search_page {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  
+  /* Tiêu đề kết quả tìm kiếm */
+  .container.search_page h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  /* Khu vực kết quả tìm kiếm */
+  .search_results {
+    display: flex;
+    justify-content: space-around; /* Dàn đều các sản phẩm */
+    flex-wrap: wrap; /* Đảm bảo hiển thị đẹp trên các màn hình nhỏ */
+    gap: 20px; /* Khoảng cách giữa các sản phẩm */
+    margin-top: 20px;
+  }
+  
+  /* Card của từng sản phẩm */
+  .search_result_item {
+    max-width: 200px; /* Định chiều rộng tối đa */
+    text-align: center;
+  }
+  
+  /* Hình ảnh sản phẩm */
+  .search_result_item img.search_result_image {
+    width: 100%; /* Hình ảnh sẽ chiếm toàn bộ chiều rộng */
+    height: auto;
+    border-radius: 5px; /* Bo góc cho ảnh */
+    margin-bottom: 10px;
+  }
+  
+  /* Tên sản phẩm */
+  .search_result_item p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  /* Giá sản phẩm */
+  .search_result_item p:last-child {
+    font-size: 18px;
+    font-weight: bold;
+
+  }
+  

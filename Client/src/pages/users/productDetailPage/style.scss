@@ -1,0 +1,214 @@
+@use "sass:map";
+@import "style/pages/theme";
+@import "style/pages/responsive";
+
+.product_detail_pic {
+  display: flex;
+  column-gap: 10px;
+  img {
+    flex: 0 0 auto;
+    object-fit: cover;
+    max-width: 65%;
+    height: auto;
+  }
+  .main {
+    flex: 0 0 35%;
+    display: grid;
+    align-items: stretch;
+    img {
+      width: 100%;
+      object-fit: cover;
+
+      &:not(:first-child) {
+        padding-top: 5px;
+      }
+    }
+  }
+}
+.product_detail_text {
+  h2 {
+    color: #252525;
+    font-weight: 700;
+  }
+  .seen-icon {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    line-height: 30px;
+    column-gap: 5px;
+  }
+  p {
+    margin: 10px 0;
+    line-height: 25px;
+  }
+  ul {
+    margin: 20px 0;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+    li {
+      list-style: none;
+      display: flex;
+      column-gap: 20px;
+      line-height: 35px;
+      b {
+        width: 150px;
+      }
+      span {
+        display: flex;
+        column-gap: 10px;
+        align-items: center;
+        svg {
+          font-size: 20px;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+.product_detail_tab {
+  margin: 20px 20px;
+  h4 {
+    text-align: center;
+    position: relative;
+    margin-bottom: 20px;
+
+    &::after {
+      position: absolute;
+      right: 0;
+      top: 12px;
+      height: 1px;
+      width: 43%;
+      background: #ebebeb;
+      content: "";
+    }
+    &::before {
+      position: absolute;
+      left: 0;
+      top: 12px;
+      height: 1px;
+      width: 43%;
+      background: #ebebeb;
+      content: "";
+    }
+    &::after,
+    &::before {
+      @include Responsive($MEDIUM_DEVICES) {
+        width: 42%;
+      }
+      @include Responsive($TABLET_DEVICES) {
+        width: 38%;
+      }
+      @include Responsive($WIDE_MOBILE) {
+        width: 34%;
+      }
+      @include Responsive($SMALL_DEVICES) {
+        width: 27%;
+      }
+    }
+  }
+}
+.comment {
+  padding: 10px;
+  margin-bottom: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px; /* Làm tròn góc */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Hiệu ứng nổi nhẹ */
+}
+
+/* Header chứa avatar, tên, và thời gian */
+.comment-header {
+  display: flex;
+  align-items: center; /* Căn giữa theo chiều dọc */
+  justify-content: space-between; /* Giãn cách đều giữa các thành phần */
+  margin-bottom: 8px;
+}
+
+/* Avatar và thông tin người dùng */
+.comment-avatar {
+  display: flex;
+  align-items: center; /* Đảm bảo ảnh và text căn giữa theo chiều dọc */
+  gap: 10px; /* Tạo khoảng cách giữa avatar và text */
+}
+
+/* Hình ảnh Avatar */
+.avatar-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* Bo tròn ảnh */
+  object-fit: cover; /* Giữ tỷ lệ hình ảnh */
+}
+
+/* Thông tin người dùng */
+.comment-info {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tên người dùng */
+.username {
+  font-weight: bold;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Thời gian bình luận */
+.time {
+  font-size: 12px;
+  color: #888; /* Màu xám nhạt */
+}
+
+/* Nội dung bình luận */
+.comment-content {
+  font-size: 14px;
+  color: #333;
+  margin-top: 8px; /* Tạo khoảng cách giữa nội dung và header */
+}
+/* Form Bình luận */
+.comment-form {
+  display: flex;
+  flex-direction: column; /* Căn dọc các thành phần trong form */
+  gap: 10px; /* Tạo khoảng cách giữa các thành phần */
+  margin-bottom: 20px;
+}
+
+.comment-form__textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: 1px solid #d1d5db; /* Màu viền nhạt */
+  border-radius: 8px; /* Làm tròn viền */
+  resize: none; /* Không cho phép thay đổi kích thước */
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.comment-form__textarea:focus {
+  outline: none;
+  border-color: #eeeeee; /* Màu viền khi focus */
+  box-shadow: map.get($theme_colors, "main") /* Hiệu ứng sáng viền */
+}
+
+.comment-form__button {
+  align-self: flex-end; /* Căn nút về phía cuối bên phải */
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  background-color: map.get($theme_colors, "main"); /* Màu xanh */
+  border: none;
+  border-radius: 8px; /* Bo tròn viền nút */
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.comment-form__button:hover {
+  background-color: map.get($theme_colors, "main"); /* Đậm hơn khi hover */
+  transform: scale(1.05); /* Hiệu ứng phóng to nhẹ khi hover */
+}
+
+.comment-form__button:active {
+  transform: scale(0.98); /* Hiệu ứng thu nhỏ nhẹ khi nhấn */
+}
