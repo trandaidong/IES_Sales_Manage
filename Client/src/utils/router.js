@@ -9,5 +9,6 @@ export const ROUTERS = {
     CHECKOUT: "/thanh-toan",
     SEARCH: "/tim-kiem",
     CATEGORY: "/categories/:categoryId", // Thêm đường dẫn cho Category
+    AUTH: "/auth",
   },
 };

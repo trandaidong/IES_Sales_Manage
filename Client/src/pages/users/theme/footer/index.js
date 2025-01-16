@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 import "./style.scss";
 import { Link } from "react-router-dom";
 import {
@@ -8,17 +8,34 @@ import {
 } from "react-icons/ai";
 
 const Footer = () => {
+  const [setting, setSetting] = useState([]); // Danh mục lấy từ API
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/client/home");
+        const data = await response.json();
+
+        setSetting(data.setting || []); // Cập nhật setting
+      } catch (error) {
+        console.error("Lỗi khi gọi API lấy danh mục:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   return (
     <footer className="footer">
       <div className="container">
         <div className="row">
           <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12">
             <div className="footer_about">
-              <h1 className="footer_about_logo">Duc dep troai</h1>
+              <h1 className="footer_about_logo"> {setting.WEBNAME}</h1>
               <ul>
-                <li>Địa chỉ:Hồ Chí Minh</li>
-                <li>Phone:0856712231</li>
-                <li>Email:ducdeptrai@gmail.com</li>
+                <li>Địa chỉ: {setting.ADDRESS}</li>
+                <li>Phone: {setting.PHONE}</li>
+                <li>Email: {setting.EMAIL}</li>
               </ul>
             </div>
           </div>

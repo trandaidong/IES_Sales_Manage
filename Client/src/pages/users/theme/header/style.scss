@@ -15,6 +15,7 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
     padding: 10px 0 13px;
     list-style: none;
     column-gap: 20px;
+
     li {
       font-size: 14px;
       color: map.get($theme-colors, "normal-text");
@@ -22,8 +23,10 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
       align-items: center;
       column-gap: 2px;
     }
+
     li:first-child {
       position: relative;
+
       &::after {
         position: absolute;
         right: -10px;
@@ -37,6 +40,7 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
     }
   }
 }
+
 .header_top_right {
   display: flex;
   justify-content: flex-end;
@@ -54,26 +58,33 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
       color: map.get($theme-colors, "normal-text");
     }
   }
+
   li:last-child a {
     cursor: pointer;
     margin-left: 10px;
+
     span {
       font-size: 14px;
       margin-left: 2px;
     }
   }
 }
+
 .header_logo {
   padding: 15px 0;
 }
+
 .header_menu {
   padding: 24px 0;
+
   ul {
     display: flex;
     justify-content: space-between;
+
     li {
       list-style: none;
       position: relative;
+
       a {
         text-decoration: none;
         font-size: 14px;
@@ -86,6 +97,7 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
         display: block;
       }
     }
+
     li:hover .header_menu_dropdown {
       opacity: 1;
       visibility: visible;
@@ -94,6 +106,7 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
     .active a {
       color: map.get($theme-colors, "main");
     }
+
     .header_menu_dropdown {
       background: #222222;
       display: block;
@@ -104,6 +117,7 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
       transition: all, 0.3s;
       opacity: 0;
       visibility: hidden;
+
       li {
         a {
           text-transform: capitalize;
@@ -111,6 +125,7 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
           font-weight: 400;
           padding: 5px 15px;
         }
+
         :hover {
           color: map.get($theme-colors, "main");
         }
@@ -118,6 +133,7 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
     }
   }
 }
+
 .header_cart {
   display: flex;
   // nội dung canh giữa
@@ -125,17 +141,21 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
   // vị trí trên dưới
   align-items: center;
   padding: 23px 0px;
+
   ul {
     display: flex;
     margin-right: 25px;
+
     li {
       list-style: none;
       position: relative;
       margin-left: 20px;
+
       svg {
         font-size: 25px;
         color: map.get($theme-colors, "normal-text");
       }
+
       span {
         color: white;
         background: map.get($theme-colors, "main");
@@ -154,8 +174,10 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
     }
   }
 }
+
 .hero_categories {
   position: relative;
+
   .hero_categories_all {
     background: map.get($theme-colors, "main");
     padding: 15px 25px 15px 40px;
@@ -170,11 +192,13 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
       font-size: 16px;
       margin-right: 5px;
     }
+
     svg {
       font-size: 20px;
       font-weight: bold;
     }
   }
+
   ul {
     position: absolute;
     opacity: 1;
@@ -185,6 +209,7 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
 
     li {
       list-style: none;
+
       a {
         text-decoration: none;
         background-color: transparent;
@@ -194,18 +219,22 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
         display: block;
         padding-left: 40px;
       }
+
       &:hover {
         background: #f7ffff;
+
         a {
           color: map.get($theme-colors, "main");
         }
       }
     }
+
     &.hidden {
       opacity: 0;
     }
   }
 }
+
 .hero_search_container {
   .hero_search_form {
     width: 610px;
@@ -214,10 +243,81 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
     padding-left: 15px;
     margin-bottom: 30px;
 
+    position: relative;
+
+    .inner-suggest {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      max-height: 300px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      z-index: 1;
+      overflow-y: auto;
+      display: none;
+
+      .show {
+        display: block;
+      }
+
+      .inner-item {
+        display: flex;
+        align-items: center;
+        padding: 5px;
+        border-bottom: 1px solid #ddd;
+
+        .inner-image {
+          width: 60px;
+          aspect-ratio: 1/1;
+          border-radius: 5px;
+          overflow: hidden;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+
+        &:last-child {
+          border-bottom: 0;
+        }
+      }
+
+      .inner-info {
+        flex: 1;
+        margin-left: 10px;
+
+        .inner-title {
+          white-space: pre-warp;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+          display: -webkit-box;
+          margin-bottom: 5px;
+          font-size: 14px;
+          font-weight: 700;
+          color: #4d007d
+        }
+
+        .inner-singer {
+          font-size: 13px;
+          font-weight: 500;
+          color: #282828;
+          margin-bottom: 2px;
+        }
+
+      }
+    }
+
     form {
       display: flex;
       align-items: center;
     }
+
     input {
       border: none;
       height: 48px;
@@ -232,6 +332,7 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
         border: none;
       }
     }
+
     button {
       font-size: 14px;
       color: #ffffff;
@@ -244,9 +345,11 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
       height: 100%;
     }
   }
+
   .hero_search_phone {
     display: flex;
     align-items: center;
+
     .hero_search_phone_icon {
       font-size: 25px;
       padding: 10px;
@@ -261,19 +364,23 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
       align-items: center;
       color: map.get($theme-colors, "main");
     }
+
     .hero_search_phone_text {
       display: inline-block;
+
       p {
         color: map.get($theme-colors, "normal-text");
         font-weight: bold;
         margin-bottom: 5px;
       }
+
       span {
         color: #6f6f6f;
         font-size: 14px;
       }
     }
   }
+
   .hero_item {
     background-image: url($bannerImg);
     background-size: cover;
@@ -285,6 +392,7 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
 
     .hero_text {
       padding-left: 75px;
+
       span {
         font-size: 14px;
         text-transform: uppercase;
@@ -292,6 +400,7 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
         letter-spacing: 4px;
         color: map.get($theme-colors, "main");
       }
+
       h2 {
         font-size: 45px;
         text-decoration: uppercase;
@@ -300,6 +409,7 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
         color: map.get($theme-colors, "bold-text");
         margin: 10px 0;
       }
+
       p {
         font-size: 16px;
         color: #6f6f6f;
@@ -307,6 +417,7 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
         line-height: 26px;
         margin: 0 0 15px 0;
       }
+
       a {
         display: inline-block;
         font-size: 14px;
@@ -326,6 +437,7 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
 .humberger_open {
   display: none;
 }
+
 @include Responsive($MEDIUM_DEVICES) {
   .hero_search_form {
     width: 530px !important;
@@ -338,31 +450,39 @@ $bannerImg: "/assets/users/images/hero/banner.jpg";
 
 @include Responsive($WIDE_MOBILE) {
   @include header.header-small-device;
+
   .hero_search {
     display: grid;
   }
+
   .header_logo {
     width: max-content;
   }
+
   .hero_search_form {
     width: 565px !important;
   }
+
   .hero_search_phone {
     margin-bottom: 30px;
   }
+
   .hero_item {
     margin-left: unset !important;
   }
 }
+
 @include Responsive($WIDE_MOBILE) {
   .hero_search_form {
     width: 555px !important;
   }
 }
+
 @include Responsive($SMALL_DEVICES) {
   .hero_search_form {
     width: 350px !important;
   }
+
   button {
     width: 150px;
     height: 50px !important;

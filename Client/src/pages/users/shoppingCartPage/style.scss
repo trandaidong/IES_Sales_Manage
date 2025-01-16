@@ -11,6 +11,17 @@
         td,th{
             padding: 20px 0;
             border-bottom: 1px solid #eeeeee;
+            a {
+                color: map.get($theme-colors, "normal-text");
+                text-decoration: none;
+              }
+            .quantity input[type="number"] {
+                width: 60px; /* Độ rộng tùy chỉnh */
+                padding: 5px; /* Khoảng cách bên trong */
+                text-align: center; /* Căn giữa nội dung */
+                border: 1px solid #ccc; /* Viền */
+                border-radius: 4px; /* Góc bo tròn */
+              }
         }
         .shopping_cart_item{
             display: flex;

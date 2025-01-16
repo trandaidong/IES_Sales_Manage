@@ -4,54 +4,76 @@ import Breadcrumb from "../theme/breadcrumb";
 import { Link } from "react-router-dom";
 import { ROUTERS } from "utils/router";
 import { ProductCard } from "component";
+import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]); // Dữ liệu sản phẩm
-  const [categories, setCategories] = useState([]); // Dữ liệu danh mục
+  const navigate = useNavigate(); // Định nghĩa navigate
+  const [user, setUser] = useState(null);
 
-  const sorts = [
-    "Giá thấp đến cao",
-    "Giáo cao đến thấp",
-    "Mới đến cũ",
-    "Cũ đến mới",
-    "Bán chạy nhất",
-    "Đang giảm giá",
-  ];
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user');
+    console.log(savedUser);
+    if (savedUser) {
+      setUser(JSON.parse(savedUser)); // Lấy thông tin người dùng từ localStorage
+    }
+    else setUser(null);
+  }, []);
+
+  let previousCookieValue = Cookies.get('search') || '';
+
+  setInterval(() => {
+    const currentCookieValue = Cookies.get('search') || '';
+    if (currentCookieValue !== previousCookieValue) {
+      previousCookieValue = currentCookieValue;
+
+      // Xử lý giá trị mới của cookie tại đây
+    }
+  }, 1000); // Kiểm tra mỗi giây
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/products");
+        const keyword=previousCookieValue;
+        const response = await fetch(`http://localhost:3000/client/products/search?keyword=${keyword}`); // Gọi API
         const data = await response.json();
+        // Cập nhật dữ liệu slider và banner từ products
         setProducts(data.products || []); // Toàn bộ sản phẩm
+        console.log(products);
       } catch (error) {
         console.error("Lỗi khi gọi API products:", error);
       }
     };
 
-    fetchProducts();
-  }, []);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/categories");
-        const data = await response.json();
-        setCategories(data.categories || []); // Toàn bộ danh mục
-      } catch (error) {
-        console.error("Lỗi khi gọi API categories:", error);
-      }
-    };
-
-    fetchCategories();
-  }, []);
+    fetchProducts(); // Gọi API khi component được render lần đầu
+  }, [previousCookieValue]);
+  
+  const handleAddToCart = async (_user, product) => {
+    if (!_user) {
+      console.log("Chưa đăng nhập");
+      navigate(ROUTERS.USER.AUTH); // Điều hướng đến trang đăng nhập nếu chưa đăng nhập
+      return;
+    }
+    try {
+      const userId = _user.USERID;
+      await fetch(`http://localhost:3000/client/carts/create`, { // Gửi token dưới dạng tham số URL
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, product }),
+      });
+    } catch (error) {
+      console.error("Lỗi khi gọi API người dùng:", error);
+    }
+  };
 
   return (
     <>
-      <Breadcrumb name="Danh sách sản phẩm" />
       <div className="container">
         <div className="row">
-          <div className="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+          {/* <div className="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             <div className="sidebar">
               <div className="sidebar_item">
                 <h2>Tìm kiếm</h2>
@@ -100,15 +122,20 @@ const ProductsPage = () => {
                 </ul>
               </div>
             </div>
-          </div>
-          <div className="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+          </div> */}
+          <div className="container">
+            <div className="product_detail_tab">
+              <h4>SẢN PHẨM</h4>
+            </div>
             <div className="row">
               {products.map((item, key) => (
-                <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12" key={key}>
+                <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12" key={key}>
                   <ProductCard
+                    id={item.PRODUCTID}
                     name={item.TITLE}
-                    img={`/assets/images/${item.THUMBNAIL}`}
+                    img={`${item.THUMBNAIL}`}
                     price={item.PRICE}
+                    onAddToCart={() => handleAddToCart(user, item)}
                   />
                 </div>
               ))}

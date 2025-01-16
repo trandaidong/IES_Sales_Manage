@@ -100,18 +100,6 @@ const CheckoutPage = () => {
                   onChange={handleChange}
                 />
               </div>
-              <div className="checkout_input">
-                <label>
-                  Email: <span className="required">*</span>
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Nhập email"
-                  value={checkoutInfo.email}
-                  onChange={handleChange}
-                />
-              </div>
             </div>
             <div className="checkout_input">
               <label>Ghi chú:</label>

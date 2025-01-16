@@ -1,15 +1,20 @@
 import { memo, useEffect, useState } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import { useNavigate } from "react-router-dom";
 import "./style.scss";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { ProductCard } from "component";
+import { ROUTERS } from "utils/router";
 
 const HomePage = () => {
   const [products, setProducts] = useState([]); // Dữ liệu sản phẩm
+  const [categories, setCategories] = useState([]); // Dữ liệu sản phẩm
   const [sliderItems, setSliderItems] = useState([]); // Dữ liệu slider
   const [banners, setBanners] = useState([]); // Dữ liệu banner
   const [cart, setCart] = useState([]); // Giỏ hàng
+  const navigate = useNavigate(); // Định nghĩa navigate
+  const [user, setUser] = useState(null);
 
   const responsive = {
     superLargeDesktop: { breakpoint: { max: 4000, min: 3000 }, items: 5 },
@@ -19,13 +24,23 @@ const HomePage = () => {
   };
 
   useEffect(() => {
+    const savedUser = localStorage.getItem('user');
+    console.log(savedUser);
+    if (savedUser) {
+      setUser(JSON.parse(savedUser)); // Lấy thông tin người dùng từ localStorage
+    }
+    else setUser(null);
+  }, []);
+
+  useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/products"); // Gọi API
+        const response = await fetch("http://localhost:3000/client/home"); // Gọi API
         const data = await response.json();
 
         // Cập nhật dữ liệu slider và banner từ products
         setProducts(data.products || []); // Toàn bộ sản phẩm
+        setCategories(data.categories || []); // Toàn bộ danh mục
         setSliderItems(data.products.slice(0, 5)); // 5 sản phẩm đầu tiên cho slider
         setBanners(data.products.slice(0, 3)); // 3 sản phẩm đầu tiên cho banner
       } catch (error) {
@@ -36,48 +51,43 @@ const HomePage = () => {
     fetchProducts(); // Gọi API khi component được render lần đầu
   }, []);
 
-  const handleAddToCart = (product) => {
-    const updatedCart = [...cart];
-  
-    // Kiểm tra sản phẩm đã tồn tại trong giỏ hàng hay chưa
-    const existingItemIndex = updatedCart.findIndex(
-      (item) => item.TITLE === product.TITLE
-    );
-  
-    if (existingItemIndex !== -1) {
-      // Nếu sản phẩm đã tồn tại, tăng số lượng
-      updatedCart[existingItemIndex].quantity += 1;
-    } else {
-      // Nếu chưa tồn tại, thêm sản phẩm mới và đảm bảo có 'price'
-      updatedCart.push({
-        TITLE: product.TITLE,
-        THUMBNAIL: product.THUMBNAIL,
-        price: Number(product.PRICE), // Đảm bảo giá trị là số
-        quantity: 1,
-      });
+  const handleAddToCart = async (_user,product) => {
+    if (!_user) {
+      console.log("Chưa đăng nhập");  
+      navigate(ROUTERS.USER.AUTH); // Điều hướng đến trang đăng nhập nếu chưa đăng nhập
+      return;
     }
-  
-    // Cập nhật giỏ hàng
-    setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart)); // Lưu vào localStorage
+    try {
+      const userId = _user.USERID;
+      await fetch(`http://localhost:3000/client/carts/create`, { // Gửi token dưới dạng tham số URL
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId,product }),
+      });
+    } catch (error) {
+      console.error("Lỗi khi gọi API người dùng:", error);
+    }
   };
   const renderFeaturedProducts = (data) => {
     const tabList = [];
     const tabPanels = [];
 
-    const categories = ["Tất cả", "Danh mục 1", "Danh mục 2"];
+    // const categories = ["Tất cả", "Danh mục 1", "Danh mục 2"];
     categories.forEach((category, index) => {
-      tabList.push(<Tab key={index}>{category}</Tab>);
+      tabList.push(<Tab key={index}>{category.TITLE}</Tab>);
 
       const filteredProducts = index === 0 ? data : data.slice(0, 4);
 
       const tabPanel = filteredProducts.map((item, j) => (
         <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12" key={j}>
           <ProductCard
+            id={item.PRODUCTID}
             name={item.TITLE}
-            img={`/assets/images/${item.THUMBNAIL}`}
+            img={`${item.THUMBNAIL}`}
             price={item.PRICE}
-            onAddToCart={() => handleAddToCart(item)}
+            onAddToCart={() => handleAddToCart(user,item)}
           />
         </div>
       ));
@@ -106,7 +116,7 @@ const HomePage = () => {
             <div
               className="categories_slider_item"
               style={{
-                backgroundImage: `url(/assets/images/${item.THUMBNAIL})`,
+                backgroundImage: `url(${item.THUMBNAIL})`,
               }}
               key={key}
             >
@@ -130,19 +140,19 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Banner Slider */}
+{/* 
       <div className="container">
         <Carousel responsive={responsive} className="banner_slider">
           {banners.map((banner, index) => (
             <div className="banner_pic" key={index}>
               <img
-                src={`/assets/images/${banner.THUMBNAIL}`}
+                src={`${banner.THUMBNAIL}`}
                 alt={`Banner ${index + 1}`}
               />
             </div>
           ))}
         </Carousel>
-      </div>
+      </div> */}
     </>
   );
 };

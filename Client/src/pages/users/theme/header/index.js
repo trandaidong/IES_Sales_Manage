@@ -1,7 +1,7 @@
 // file này dùng để hiển thị header của trang web
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useState, useContext } from "react";
 import "./style.scss";
-
+import Cookies from 'js-cookie';
 import {
   AiOutlineDownCircle,
   AiOutlineFacebook,
@@ -23,13 +23,13 @@ import { ROUTERS } from "utils/router";
 import { useNavigate } from "react-router-dom"; // Hook điều hướng
 
 // list danh sách sản phẩm
-export const categories = [
-  "Thịt tươi ",
-  "Rau củ",
-  "Nước trái cây",
-  "Trái cây",
-  "Hải sản",
-];
+// export const categories = [
+//   "Thịt tươi ",
+//   "Rau củ",
+//   "Nước trái cây",
+//   "Trái cây",
+//   "Hải sản",
+// ];
 
 // tạo ra 1 function Header để hiển thị header của trang web
 const Header = () => {
@@ -38,10 +38,13 @@ const Header = () => {
   const [isShowHumberger, setShowHumberger] = useState(false);
   const [isHome, setIsHome] = useState(location.pathname.length <= 1);
   const [isShowCategories, setShowCategories] = useState(isHome);
+  const [user, setUser] = useState(null); // Thông tin người dùng
+  const [cart, setCart] = useState(null); // Thông tin giỏ hàng
+
   // khi mình list đường dẫn thì nếu nó không có phần sau thì hiểu là nó không có homepage lý do nó bế hơn 1
   // lý do length <= 1 là vì nó sẽ lấy ra đường dẫn là / thôi
   const [categories, setCategories] = useState([]); // Danh mục lấy từ API
-
+  const [setting, setSetting] = useState([]); // Danh mục lấy từ API
   const [searchQuery, setSearchQuery] = useState(""); // Dữ liệu từ input tìm kiếm
   const navigate = useNavigate(); // Hook để điều hướng
 
@@ -51,15 +54,13 @@ const Header = () => {
       name: "Trang chủ",
       path: ROUTERS.USER.HOME,
     },
-    {
-      name: "Cửa hàng",
-      path: ROUTERS.USER.PRODUCTS,
-    },
+    // {
+    //   name: "Cửa hàng",
+    //   path: ROUTERS.USER.PRODUCTS,
+    // },
     {
       name: "Sản phẩm",
-      path: "",
-      isShowSubmenu: false,
-      child: [],
+      path: ROUTERS.USER.PRODUCTS,
     },
     {
       name: "Bài viết",
@@ -71,74 +72,149 @@ const Header = () => {
     },
   ]);
 
+  // Lấy dữ liệu người dùng từ localStorage khi component được mount
+  useEffect(() => {
+    const fetchUser = async () => {
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        setUser(JSON.parse(savedUser)); // Lấy thông tin người dùng từ localStorage
+      } else {
+        setUser(null);
+      }
+    };
+
+    fetchUser();
+    // Cleanup function để dọn dẹp các hiệu ứng hoặc sự kiện khi component bị unmount
+    return () => {
+      // Dọn dẹp các hiệu ứng hoặc sự kiện nếu có
+    };
+  }, []);
+
   //cập nhật địa chỉ mình đang ở
   useEffect(() => {
     const isHome = location.pathname.length <= 1;
     setIsHome(isHome);
     setShowCategories(isHome);
+
+    // Cleanup function để dọn dẹp các hiệu ứng hoặc sự kiện khi component bị unmount
+    return () => {
+      // Dọn dẹp các hiệu ứng hoặc sự kiện nếu có
+    };
   }, [location]);
 
-  const handleSearch = (e) => {
-    e.preventDefault(); // Ngăn hành vi mặc định (làm mới trang)
-    console.log("Từ khóa tìm kiếm:", searchQuery); // In từ khóa ra console
-    if (!searchQuery.trim()) return; // Không làm gì nếu input rỗng
-    // Điều hướng sang trang /search với từ khóa tìm kiếm qua state
-    navigate(ROUTERS.USER.SEARCH, { state: { searchQuery } });
+
+  // Xử lý đăng xuất
+  const handleLogout = () => {
+    Cookies.remove('tokenUser');
+    setUser(null);
+    localStorage.removeItem('user'); // Xóa thông tin người dùng khỏi localStorage
+    navigate('/');
   };
 
+  const handleSearch = async (e) => {
+    e.preventDefault(); // Ngăn hành vi mặc định (làm mới trang)
+    const formData = new FormData(e.target); // Lấy dữ liệu từ form
+    const keyword = formData.get("keyword"); // Lấy giá trị từ input có name="keyword"
+  
+    if (!keyword.trim()) {
+      Cookies.remove('search');
+      alert("Vui lòng nhập từ khóa tìm kiếm.");
+      return;
+    }
+  
+    console.log("Từ khóa tìm kiếm:", keyword);
+    Cookies.set('search', keyword);
+    setTimeout(() => {
+      Cookies.remove('search');
+      console.log("Cookie đã bị xóa sau 10 giây.");
+    }, 1000);
+    navigate('/san-pham')
+    // try {
+    //   const response = await fetch( `http://localhost:3000/client/products/search?keyword=${keyword}`, { // Gửi token dưới dạng tham số URL
+    //     method: 'GET',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     }
+    //   });
+    //   const data = await response.json();
+    //   console.log(data.products)
+    // } catch (error) {
+    //   console.error("Lỗi khi gọi API người dùng:", error);
+    // }
+  };
+
+  // Lấy danh mục từ API
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/categories");
+        const response = await fetch("http://localhost:3000/client/home");
         const data = await response.json();
-        console.log("Danh mục từ API:", data.categories); // Kiểm tra dữ liệu trả về
         setCategories(data.categories || []); // Cập nhật danh mục
+        setSetting(data.setting || []); // Cập nhật setting
       } catch (error) {
         console.error("Lỗi khi gọi API lấy danh mục:", error);
       }
     };
 
     fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/categories");
-        const data = await response.json();
-
-        // Cập nhật danh mục (child) của "Sản phẩm"
-        setMenus((prevMenus) =>
-          prevMenus.map((menu) =>
-            menu.name === "Sản phẩm"
-              ? {
-                  ...menu,
-                  child: data.categories.map((cat) => ({
-                    name: cat.TITLE,
-                    path: `/categories/${cat.CATEGORYID}`,
-                  })),
-                }
-              : menu
-          )
-        );
-      } catch (error) {
-        console.error("Lỗi khi lấy danh mục sản phẩm:", error);
-      }
+    // Cleanup function để dọn dẹp các hiệu ứng hoặc sự kiện khi component bị unmount
+    return () => {
+      // Dọn dẹp các hiệu ứng hoặc sự kiện nếu có
     };
-
-    fetchCategories();
   }, []);
+
 
   // Xử lý toggle submenu
-  const toggleSubmenu = (menuKey) => {
-    setMenus((prevMenus) =>
-      prevMenus.map((menu, index) =>
-        index === menuKey
-          ? { ...menu, isShowSubmenu: !menu.isShowSubmenu }
-          : menu
-      )
-    );
-  };
+  // const toggleSubmenu = (menuKey) => {
+  //   setMenus((prevMenus) =>
+  //     prevMenus.map((menu, index) =>
+  //       index === menuKey
+  //         ? { ...menu, isShowSubmenu: !menu.isShowSubmenu }
+  //         : menu
+  //     )
+  //   );
+  // };
+  //search suggest
+  const boxSearch = document.querySelector(".hero_search_form");
+  if (boxSearch) {
+    const input = boxSearch.querySelector('input[name="keyword"]');
+    const boxSuggest = boxSearch.querySelector(".inner-suggest");
+
+    input.addEventListener("keyup", () => {
+      const keyword = input.value;
+      // Tạo API và fetch
+      const link = `http://localhost:3000/client/products/search?keyword=${keyword}`;
+
+      fetch(link)
+        .then(res => res.json())
+        .then(data => {
+          const productSearch = data.products;
+          if (productSearch.length > 0) {
+            boxSuggest.classList.add("show");
+            const htmls = productSearch.map(product => {
+              return `
+                  <a class="inner-item" href="/songs/detail/${product.PRODUCTID}">
+                      <div class="inner-image">
+                          <img src=${product.THUMBNAIL}>
+                      </div>
+                      <div class="inner-info">
+                          <div class="inner-title">${product.TITLE} </div>
+                          <div class="inner-singer">
+                              <i class="fa-solid fa-microphone-lines"></i> ${product.PRICE} </div>
+                          </div>
+                  </a>
+              `
+            })
+            const boxList = boxSuggest.querySelector(".inner-list");
+            boxList.innerHTML = htmls.join("");
+          }
+          else {
+            boxSuggest.classList.remove("show");
+          }
+        })
+    })
+  }
+  // end search suggest
   return (
     <>
       {/* thanh bên trái khi respnsive */}
@@ -150,7 +226,7 @@ const Header = () => {
         className={`humberger_menu_wrapper${isShowHumberger ? " show" : ""}`}
       >
         <div className="header_logo">
-          <h1>DUC SHOP</h1>
+          <h1>{setting.WEBNAME}</h1>
         </div>
         <div className="humberger_menu_cart">
           <ul>
@@ -161,7 +237,7 @@ const Header = () => {
             </li>
           </ul>
           <div className="header_cart_price">
-            Giỏ hàng: <span>{formatter(1001230)}</span>
+            Giỏ hàng: <span>{formatter(10023532)}</span>
           </div>
         </div>
         <div className="humberger_menu_widget">
@@ -194,17 +270,16 @@ const Header = () => {
                 </Link>
                 {menu.child && (
                   <ul
-                    className={`header_menu_dropdown${
-                      menu.isShowSubmenu ? " show_submenu" : ""
-                    }`}
+                    className={`header_menu_dropdown${menu.isShowSubmenu ? " show_submenu" : ""
+                      }`}
                   >
                     {categories.map((category, index) => (
-  <li key={index}>
-    <Link to={`${ROUTERS.USER.CATEGORY.replace(":categoryId", category.CATEGORYID)}`}>
-      {category.TITLE}
-    </Link>
-  </li>
-))}
+                      <li key={index}>
+                        <Link to={`${ROUTERS.USER.CATEGORY.replace(":categoryId", category.CATEGORYID)}`}>
+                          {category.TITLE}
+                        </Link>
+                      </li>
+                    ))}
                   </ul>
                 )}
               </li>
@@ -225,16 +300,18 @@ const Header = () => {
             <AiOutlineGlobal />
           </Link>
         </div>
+
         <div className="humberger_menu_contact">
           <ul>
             <li>
-              <MdEmail /> Ducshop@gmail.com
+              <MdEmail /> {setting.EMAIL}
             </li>
             <li>Miễn phí đơn từ {formatter(200000)}</li>
           </ul>
         </div>
       </div>
 
+      {/* Hết thanh bên trái khi respnsive */}
       <div className="header_top">
         <div className="container">
           <div className="row">
@@ -242,9 +319,9 @@ const Header = () => {
               <ul>
                 <li>
                   <AiOutlineMail />
-                  Duk@gmail.com
+                  {setting.EMAIL}
                 </li>
-                <li>mien phi ship don tu {formatter(200000)}</li>
+                <li>{setting.TITLE}</li>
               </ul>
             </div>
             <div className="col-6 header_top_right">
@@ -269,12 +346,23 @@ const Header = () => {
                     <AiOutlineGlobal />
                   </Link>
                 </li>
-                <li>
-                  <Link to={""}>
-                    <AiOutlineUser />
-                  </Link>
-                  <span>Đăng nhập</span>
-                </li>
+                {user ? (
+                  <li>
+                    <Link to={ROUTERS.USER.AUTH}>
+                      <AiOutlineUser />
+                    </Link>
+                    <button onClick={handleLogout}>
+                      <span>Đăng xuất</span>
+                    </button>
+                  </li>
+                ) : (
+                  <li>
+                    <Link to={ROUTERS.USER.AUTH}>
+                      <AiOutlineUser />
+                      <span>Đăng nhập</span>
+                    </Link>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -284,7 +372,7 @@ const Header = () => {
         <div className="row">
           <div className="col-lg-3">
             <div className="header_logo">
-              <h1>DUC SHOP</h1>
+              <h1>{setting.WEBNAME}</h1>
             </div>
           </div>
           <div className="col-lg-6">
@@ -307,23 +395,25 @@ const Header = () => {
               </ul>
             </nav>
           </div>
-          <div className="col-lg-3">
-            <div className="header_cart">
-              <div className="header_cart_price">
-                <span>{formatter(1001230)}</span>
+          {user ? (
+            <div className="col-lg-3">
+              <div className="header_cart">
+                <div className="header_cart_price">
+                  <span>{formatter(user.CART.TOTALPRICE)}</span>
+                </div>
+                <ul>
+                  <li>
+                    <Link to={ROUTERS.USER.SHOPPING_CART}>
+                      <AiOutlineShoppingCart /> <span>{user.CART.TOTALQUANTITY}</span>
+                    </Link>
+                  </li>
+                </ul>
               </div>
-              <ul>
-                <li>
-                  <Link to={ROUTERS.USER.SHOPPING_CART}>
-                    <AiOutlineShoppingCart /> <span>5</span>
-                  </Link>
-                </li>
-              </ul>
+              <div className="humberger_open">
+                <AiOutlineMenu onClick={() => setShowHumberger(true)} />
+              </div>
             </div>
-            <div className="humberger_open">
-              <AiOutlineMenu onClick={() => setShowHumberger(true)} />
-            </div>
-          </div>
+          ) : <div></div>}
         </div>
       </div>
       <div className="container">
@@ -334,17 +424,17 @@ const Header = () => {
               onClick={() => setShowCategories(!isShowCategories)}
             >
               <AiOutlineMenu />
-              Danh sách sản phẩm
-              </div>
+              Danh sách danh mục
+            </div>
             {isShowCategories && categories.length > 0 && (
               <ul className="categories_list">
-             {categories.map((category, index) => (
-  <li key={index}>
-    <Link to={`${ROUTERS.USER.CATEGORY.replace(":categoryId", category.CATEGORYID)}`}>
-      {category.TITLE}
-    </Link>
-  </li>
-))}
+                {categories.map((category, index) => (
+                  <li key={index}>
+                    <Link to={`${ROUTERS.USER.CATEGORY.replace(":categoryId", category.CATEGORYID)}`}>
+                      {category.TITLE}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             )}
           </div>
@@ -355,18 +445,24 @@ const Header = () => {
                   <input
                     type="text"
                     placeholder="Bạn đang tìm gì?"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)} // Cập nhật input}
+                    name="keyword"
+                  // value={searchQuery}
+                  // onChange={(e) => setSearchQuery(e.target.value)} // Cập nhật input}
                   />
                   <button type="submit">Tìm kiếm</button>
                 </form>
+                <div className="inner-suggest">
+                  <div className="inner-list">
+                  </div>
+                </div>
               </div>
+
               <div className="hero_search_phone">
                 <div className="hero_search_phone_icon">
                   <AiOutlinePhone />
                 </div>
                 <div className="hero_search_phone_text">
-                  <p>0656.789.456</p>
+                  <p>{setting.PHONE}</p>
                   <span>Hỗ trợ 24/7</span>
                 </div>
               </div>
@@ -374,14 +470,14 @@ const Header = () => {
             {isHome && (
               <div className="hero_item">
                 <div className="hero_text">
-                  <span>Perfectly imperfect</span>
+                  <span>Sản phẩm chất lượng cao</span>
                   <h2>
-                    Simle often <br />
-                    worry less
+                    Thoải mái lựa chọn <br />
+                    Luôn an tâm
                   </h2>
-                  <p>The best thing to hold onto in life is each other</p>
+                  <p>Đồng hành cùng bạn mọi lúc, mọi nơi</p>
                   <Link to="" className="primary-btn">
-                    I've been looking for the spring of my life, you just smile
+                    Khám phá những sản phẩm phù hợp với bạn
                   </Link>
                 </div>
               </div>

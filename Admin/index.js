@@ -1,9 +1,10 @@
 const express = require('express');
-const cors= require('cors'); // Loại bỏ ngăn chặn giữa việc BE chặn FE lấy data
+const cors = require('cors'); // Loại bỏ ngăn chặn giữa việc BE chặn FE lấy data
 // Route
 const routeAdmin = require("./API/Routes/Admin/index.route"); // no file extension
+const routeClient = require("./API/Routes/Client/index.route"); // no file extension
 const sequelize = require("./config/database");
-const systemConfig =require("./config/system");
+const systemConfig = require("./config/system");
 
 const methodOverride = require('method-override')// thư viện ghi đè method các phương thức PATH..
 const bodyParser = require('body-parser')// thư viện chuyển đổi data trong req.body có thể usable
@@ -27,6 +28,7 @@ app.set("view engine", 'pug');
 
 app.use(methodOverride('_method')) // override
 app.use(bodyParser.urlencoded({ extended: false }))// encode chuyển đổi res.body => dữ liệu
+app.use(bodyParser.json()); // Để xử lý dữ liệu JSON
 
 app.locals.prefixAdmin = systemConfig.prefixAdmin;
 app.use(express.static(`${__dirname}/public`));
@@ -39,6 +41,7 @@ app.use(flash());
 // End flash
 
 routeAdmin(app);
+routeClient(app);
 
 app.listen(port, () => {
     console.log(`App listening on port ${port}`);
