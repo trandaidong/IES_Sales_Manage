@@ -5,6 +5,7 @@ The system is designed to streamline core sales operations, including:
 - Order processing – handling customer orders efficiently from placement to completion.
 - Integrated a password recovery feature that sends reset instructions via email using Nodemailer.
 - Implemented an admin-side user role and permission management system to control access to different features.
+---
 This project aims to provide a practical example for developers learning full-stack web development, demonstrating frontend-backend communication, RESTful API design, database integration, and third-party service usage.
 It can serve as a foundation for building more complex retail management systems, with the flexibility to add features like authentication, reporting, or payment gateway integration.
 # Database Design
