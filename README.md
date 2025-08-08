@@ -50,8 +50,8 @@ realtime-creditcard-etl/
 ## How to Run the Project
 ## Prerequisites
 Ensure that MySQL is installed on your system and the MySQL service is running.
-
-Backend (Admin Panel) Setup
+## Execution
+### Backend (Admin Panel) Setup
 1. Install MySQL and make sure the MySQL server is running.
 2. Import the provided database file into MySQL.
 3. Open the file:
@@ -72,8 +72,23 @@ npm start
 ```bash
 http://localhost:3000/admin/auth/login
 ```
-to access the admin panel.
-
+  to access the admin panel.
+### Frontend (Client) Setup
+Repeat the above process for the Client folder:
+1. Open a terminal in the Source/Client folder.
+2. Install dependencies:
+```bash
+npm install
+```
+3. Start the client:
+```bash
+npm start
+```
+4. Open a browser and navigate to:
+```bash
+http://localhost:3000/login
+```
+  to access the home.
 
 ## Contact
 For any issues or questions, please reach out to me for support.
